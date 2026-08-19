@@ -16,7 +16,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="space-y-6">
-            <Logo width={180} height={45} />
+            <Logo width={132} height={138} />
             <p className="text-[var(--color-text-muted)] text-sm leading-relaxed">
               {siteConfig.description}
             </p>
@@ -85,7 +85,7 @@ export function Footer() {
               </li>
               <li className="flex items-center text-[var(--color-text-muted)] text-sm">
                 <Phone className="w-5 h-5 text-[var(--color-brand)] mr-3 flex-shrink-0" />
-                <a href={`tel:${siteConfig.contact.phone.replace(/\\s/g, '')}`} className="hover:text-[var(--color-brand-light)] transition-colors">
+                <a href={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`} className="hover:text-[var(--color-brand-light)] transition-colors">
                   {siteConfig.contact.phone}
                 </a>
               </li>

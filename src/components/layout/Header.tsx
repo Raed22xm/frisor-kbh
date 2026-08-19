@@ -40,8 +40,8 @@ export function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
-          ? "glass-elevated py-3 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
-          : "bg-black/20 backdrop-blur-sm py-5"
+          ? "glass-elevated py-2 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
+          : "bg-black/20 backdrop-blur-sm py-2"
       )}
     >
       {/* Subtle top glow line when scrolled */}
@@ -56,7 +56,7 @@ export function Header() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Logo width={160} height={40} className={cn("transition-transform duration-300", isScrolled && "scale-90")} />
+            <Logo width={84} height={88} className={cn("transition-transform duration-300", isScrolled && "scale-[0.92]")} />
           </div>
 
           {/* Desktop Navigation */}

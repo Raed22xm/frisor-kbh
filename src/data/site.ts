@@ -7,13 +7,14 @@ export const siteConfig: SiteConfig = {
     "Professionel herrefrisør i København med fokus på klipning, fades og skægpleje.",
   url: "https://frisor-kbh.dk", // Placeholder domain
   contact: {
-    phone: "[PHONE]",
+    phone: "+45 52 61 00 78",
     email: "[EMAIL]",
     address: "Vesterbrogade 171",
-    postalCode: "[POSTCODE]",
-    city: "København",
+    postalCode: "1800",
+    city: "Frederiksberg",
     bookingUrl: "[BOOKING URL]",
-    directionsUrl: "https://maps.google.com/?q=Vesterbrogade+171,[POSTCODE]+København",
+    directionsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Vesterbrogade%20171%2C%201800%20Frederiksberg",
   },
   social: {
     instagram: "[INSTAGRAM URL]",
@@ -22,7 +23,7 @@ export const siteConfig: SiteConfig = {
   seo: {
     defaultTitle: "FRISØR KBH | Herrefrisør i København",
     defaultDescription:
-      "FRISØR KBH tilbyder professionelle herreklipninger, fades og skægpleje i København. Book din tid online eller kom forbi salonen.",
+      "FRISØR KBH tilbyder professionelle herreklipninger, fades og skægpleje på Vesterbrogade 171, 1800 Frederiksberg. Book din tid online eller kom forbi salonen.",
   },
 };
 
@@ -42,6 +43,8 @@ export const services: ServiceItem[] = [
     description: "Klassisk klipning med saks og maskine. Inkl. vask og styling.",
     duration: "30 min",
     featured: true,
+    image: "/images/services/herreklip-customer.webp",
+    imageAlt: "Kunde med færdig klassisk herreklip",
   },
   {
     id: "herreklip-skaeg",
@@ -50,12 +53,16 @@ export const services: ServiceItem[] = [
     description: "Herreklip inkl. retning af skæg og varme håndklæder.",
     duration: "45 min",
     featured: true,
+    image: "/images/services/herreklip-og-skaeg-customer.webp",
+    imageAlt: "Kunde med frisk herreklip og formet skæg",
   },
   {
     id: "pensionistklip",
     name: "Pensionistklip",
     price: "150 kr.",
     duration: "30 min",
+    image: "/images/services/pensionistklip-customer.webp",
+    imageAlt: "Ældre kunde med færdig klassisk klipning og sølvgråt hår",
   },
   {
     id: "skin-fade",
@@ -63,6 +70,8 @@ export const services: ServiceItem[] = [
     price: "[PRICE]",
     description: "Helt kort i siderne, fadet op til toppen.",
     duration: "45 min",
+    image: "/images/services/skin-fade-customer.webp",
+    imageAlt: "Kunde med færdig skin fade i sideprofil",
   },
   {
     id: "skaegtrimning",
@@ -70,6 +79,8 @@ export const services: ServiceItem[] = [
     price: "[PRICE]",
     description: "Trimning og retning af skæg.",
     duration: "15 min",
+    image: "/images/services/skaegtrimning-customer.webp",
+    imageAlt: "Kunde med færdigtrimmet og formet fuldskæg",
   },
 ];
 

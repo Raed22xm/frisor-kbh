@@ -35,6 +35,8 @@ export interface ServiceItem {
   duration?: string;
   bookingUrl?: string;
   featured?: boolean;
+  image?: string;
+  imageAlt?: string;
 }
 
 export interface OpeningHoursItem {

@@ -27,7 +27,7 @@ export function MobileNavigation({ isOpen, onClose }: MobileNavigationProps) {
       id="mobile-menu"
       ref={navRef}
       className={cn(
-        "fixed inset-0 top-[60px] z-40 overflow-y-auto md:hidden",
+        "absolute inset-x-0 top-full h-[calc(100dvh-100%)] z-40 overflow-y-auto md:hidden",
         "flex flex-col transition-all duration-500",
         "bg-black/90 backdrop-blur-2xl",
         isOpen

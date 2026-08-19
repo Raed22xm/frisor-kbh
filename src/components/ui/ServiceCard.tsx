@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { ServiceItem } from "@/types/site";
 import { Button } from "./Button";
 import { Clock } from "lucide-react";
@@ -11,7 +12,7 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({ service, className }: ServiceCardProps) {
-  const { name, price, description, duration, featured } = service;
+  const { name, price, description, duration, featured, image, imageAlt } = service;
 
   return (
     <div
@@ -25,9 +26,22 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
       )}
     >
       {featured && (
-        <span className="absolute -top-3 right-6 bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-light)] text-white text-xs font-bold px-4 py-1.5 uppercase tracking-wider rounded-full shadow-[0_4px_16px_var(--color-brand-glow)]">
+        <span className="absolute -top-3 right-6 z-20 bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-light)] text-white text-xs font-bold px-4 py-1.5 uppercase tracking-wider rounded-full shadow-[0_4px_16px_var(--color-brand-glow)]">
           Populær
         </span>
+      )}
+
+      {image && (
+        <div className="relative -mx-3 -mt-3 mb-6 aspect-video overflow-hidden rounded-lg border border-white/[0.06] bg-[var(--color-surface-light)]">
+          <Image
+            src={image}
+            alt={imageAlt || name}
+            fill
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" aria-hidden="true" />
+        </div>
       )}
       
       <div className="flex justify-between items-start mb-5">

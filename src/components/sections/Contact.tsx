@@ -23,7 +23,8 @@ export function Contact() {
             <div>
               <p className="text-[var(--color-text-muted)] text-lg mb-10 leading-relaxed">
                 Har du spørgsmål, eller ønsker du at booke en tid telefonisk? 
-                Du er altid velkommen til at kontakte os, eller blot møde op i salonen.
+                Du er altid velkommen til at kontakte os, eller blot møde op i salonen på{" "}
+                Vesterbrogade 171, 1800 Frederiksberg.
               </p>
 
               <div className="space-y-8">
@@ -58,7 +59,7 @@ export function Contact() {
                   <div>
                     <h3 className="text-white font-heading text-lg mb-2 uppercase tracking-wide">Telefon</h3>
                     <a 
-                      href={`tel:${siteConfig.contact.phone.replace(/\\s/g, '')}`} 
+                      href={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`}
                       className="text-[var(--color-text-muted)] hover:text-[var(--color-brand-light)] transition-colors text-xl font-medium"
                     >
                       {siteConfig.contact.phone}
@@ -88,7 +89,7 @@ export function Contact() {
           <ScrollReveal direction="right">
             <div className="glass-elevated rounded-2xl min-h-[400px] flex flex-col items-center justify-center relative p-8 text-center group overflow-hidden">
               {/* Styled background */}
-              <div className="absolute inset-0 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Copenhagen&zoom=14&size=800x800&sensor=false&style=feature:all|element:labels.text.fill|color:0xffffff&style=feature:all|element:labels.text.stroke|visibility:on|color:0x000000|weight:2&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:geometry|color:0x171a1a&style=feature:poi|element:geometry|color:0x292c2c&style=feature:road|element:geometry.fill|color:0x353333&style=feature:road|element:geometry.stroke|color:0x0b0d0d&style=feature:transit|element:geometry|color:0x174e4d&style=feature:water|element:geometry|color:0x0b0d0d')] bg-cover bg-center opacity-20 grayscale rounded-2xl"></div>
+              <div className="absolute inset-0 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Vesterbrogade+171,+1800+Frederiksberg&zoom=15&size=800x800&sensor=false&style=feature:all|element:labels.text.fill|color:0xffffff&style=feature:all|element:labels.text.stroke|visibility:on|color:0x000000|weight:2&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:geometry|color:0x171a1a&style=feature:poi|element:geometry|color:0x292c2c&style=feature:road|element:geometry.fill|color:0x353333&style=feature:road|element:geometry.stroke|color:0x0b0d0d&style=feature:transit|element:geometry|color:0x174e4d&style=feature:water|element:geometry|color:0x0b0d0d')] bg-cover bg-center opacity-20 grayscale rounded-2xl"></div>
               
               <MapPin className="w-14 h-14 text-[var(--color-brand)] mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500" />
               <h3 className="text-2xl text-white font-heading mb-6 relative z-10">Find Os</h3>
