@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FRISØR KBH
 
-## Getting Started
+Dette er den officielle website for FRISØR KBH, en moderne herrefrisør i København.
+Websitet er bygget med Next.js, Tailwind CSS og TypeScript for at sikre høj performance, stærk SEO, og en premium brugeroplevelse.
 
-First, run the development server:
+## Teknologistak
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS + custom CSS variables
+- **Sprog:** TypeScript
+- **Ikoner:** Lucide React
+- **SEO:** Statisk generering (SSG), JSON-LD strukturerede data
+
+## Installation
+Sørg for at have Node.js (version 18 eller nyere) installeret.
+
+```bash
+# Installer afhængigheder
+npm install
+```
+
+## Lokal Udvikling
+Start den lokale udviklingsserver:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Websitet kan nu tilgås på [http://localhost:3000](http://localhost:3000).
+
+## Produktion Build
+For at bygge applikationen til produktion:
+
+```bash
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Projektstruktur
+- `src/app/` - Next.js App Router (sider, layouts, globale styles)
+- `src/components/` - Genanvendelige UI komponenter (layout, sektioner, ui-elementer)
+- `src/data/site.ts` - **Al redigerbar indhold og forretningsdata findes her!**
+- `public/brand/` - Logoer og brand assets
+- `public/images/` - Billeder til galleri, hero sektion osv.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Sådan opdaterer du indhold
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Udskiftning af Logo
+Placer det officielle logo i `public/brand/`:
+- `frisor-kbh-wordmark.svg` (bruges i header)
+- `frisor-kbh-logo.png` (bruges til SEO/deling)
+*Sørg for, at filerne beholder samme navne for at undgå at ændre i koden.*
 
-## Learn More
+### Udskiftning af Billeder
+- **Hero-billede:** Overskriv `public/images/hero.webp`
+- **Om os-billede:** Overskriv `public/images/about.webp`
+- **Galleri:** Læg billeder i `public/images/gallery/` mappen (navngivet `1.webp`, `2.webp` osv.)
 
-To learn more about Next.js, take a look at the following resources:
+### Redigering af Virksomhedsinformation (Adresse, Priser, Åbningstider osv.)
+Alt indhold kan nemt redigeres uden at røre ved selve komponenterne. Åbn `src/data/site.ts`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Her kan du blandt andet rette:
+- `contact.phone` og `contact.email`
+- `contact.bookingUrl`
+- `openingHours` listen
+- `services` listen (tilføj, fjern eller rediger priser)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment til Vercel
+Dette projekt er optimeret til lynhurtig deployment på Vercel:
+1. Push koden til GitHub.
+2. Opret et nyt projekt i Vercel og importer repository'et.
+3. Vercel opdager automatisk Next.js og opsætter de rigtige build-kommandoer (`npm run build`).
+4. Klik på "Deploy".
