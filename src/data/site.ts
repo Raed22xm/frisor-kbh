@@ -9,11 +9,11 @@ export const siteConfig: SiteConfig = {
   contact: {
     phone: "[PHONE]",
     email: "[EMAIL]",
-    address: "[ADDRESS]",
+    address: "Vesterbrogade 171",
     postalCode: "[POSTCODE]",
     city: "København",
     bookingUrl: "[BOOKING URL]",
-    directionsUrl: "https://maps.google.com/?q=[ADDRESS],[POSTCODE]+København",
+    directionsUrl: "https://maps.google.com/?q=Vesterbrogade+171,[POSTCODE]+København",
   },
   social: {
     instagram: "[INSTAGRAM URL]",

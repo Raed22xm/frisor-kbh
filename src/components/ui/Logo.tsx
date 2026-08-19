@@ -19,7 +19,7 @@ export function Logo({ className, width = 180, height = 50 }: LogoProps) {
       <div className="relative" style={{ width, height }}>
         {/* Placeholder for the official logo - user to supply the actual file at this path */}
         <Image
-          src="/brand/frisor-kbh-wordmark.svg"
+          src="/brand/logo.png"
           alt={siteConfig.businessName}
           fill
           className="object-contain object-left"
