@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
   CheckCircle2,
   Clock3,
-  Scissors,
   UserRound,
 } from "lucide-react";
 import BookingCalendar from "@/components/booking/BookingCalendar";
-import { services } from "@/data/site";
 import {
   formatDateLabel,
   isValidEmail,
@@ -25,29 +23,36 @@ type CustomerState = {
   notes: string;
 };
 
-const stepLabels = [
-  "Behandling",
-  "Medarbejder",
-  "Dato & tid",
-  "Oplysninger",
-];
+type Category = { id: string; name: string; description: string };
+type Treatment = {
+  id: string;
+  categoryId: string;
+  name: string;
+  durationMinutes: number;
+  price: string;
+};
+type Employee = { id: string; name: string };
+type Catalog = {
+  categories: Category[];
+  treatments: Treatment[];
+  employees: Employee[];
+};
 
-const employees = [
-  { id: "ahmad", name: "Ahmad" },
-  { id: "frisor", name: "Frisør" },
-];
+const stepLabels = ["Behandling", "Medarbejder", "Dato & tid", "Oplysninger"];
 
 export default function BookingWizard() {
+  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [step, setStep] = useState(0);
-  const [selectedTreatment, setSelectedTreatment] = useState<string | null>(
-    null
-  );
+  const [selectedTreatment, setSelectedTreatment] = useState<string | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [successId, setSuccessId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [customer, setCustomer] = useState<CustomerState>({
     name: "",
     phone: "",
@@ -58,27 +63,96 @@ export default function BookingWizard() {
     Partial<Record<keyof CustomerState, string>>
   >({});
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const errorAlertRef = useRef<HTMLDivElement>(null);
 
-  const selectedTreatmentObject =
-    services.find((t) => t.id === selectedTreatment) ?? null;
-  const selectedEmployeeObject =
-    employees.find((e) => e.id === selectedEmployee) ?? null;
+  // ── Fetch catalog on mount ──
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingCatalog(true);
+    setError(null);
 
-  // Mock fetching slots
+    fetch("/api/services", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente behandlinger.");
+        return response.json() as Promise<Catalog>;
+      })
+      .then((payload) => {
+        if (!cancelled) setCatalog(payload);
+      })
+      .catch((fetchError: Error) => {
+        if (!cancelled) setError(fetchError.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingCatalog(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const allTreatments = useMemo(() => catalog?.treatments ?? [], [catalog]);
+  const allEmployees = useMemo(() => catalog?.employees ?? [], [catalog]);
+
+  const selectedTreatmentObject = useMemo(
+    () => allTreatments.find((t) => t.id === selectedTreatment) ?? null,
+    [allTreatments, selectedTreatment]
+  );
+  const selectedEmployeeObject = useMemo(
+    () => allEmployees.find((e) => e.id === selectedEmployee) ?? null,
+    [allEmployees, selectedEmployee]
+  );
+
+  // ── Fetch available slots when date/employee/treatment change ──
   useEffect(() => {
     if (!selectedDate || !selectedEmployee || !selectedTreatment) {
       setAvailableSlots([]);
       return;
     }
-    // Just mock some slots for the prototype
-    setAvailableSlots(["10:00", "11:30", "13:00", "14:30", "16:00"]);
+
+    let cancelled = false;
+    setLoadingSlots(true);
+    setError(null);
+
+    fetch(
+      `/api/availability?date=${encodeURIComponent(selectedDate)}&employeeId=${encodeURIComponent(selectedEmployee)}&treatmentId=${encodeURIComponent(selectedTreatment)}`,
+      { cache: "no-store" }
+    )
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente ledige tider.");
+        return response.json();
+      })
+      .then((payload) => {
+        if (!cancelled) {
+          setAvailableSlots(Array.isArray(payload.slots) ? payload.slots : []);
+        }
+      })
+      .catch((fetchError: Error) => {
+        if (!cancelled) {
+          setAvailableSlots([]);
+          setError(fetchError.message);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingSlots(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedDate, selectedEmployee, selectedTreatment]);
 
+  useEffect(() => {
+    if (!loadingCatalog) stepHeadingRef.current?.focus();
+  }, [step, loadingCatalog]);
+
+  useEffect(() => {
+    if (error) errorAlertRef.current?.focus();
+  }, [error]);
+
   const goToStep = (nextStep: number) => {
+    setError(null);
     setStep(nextStep);
-    setTimeout(() => {
-      stepHeadingRef.current?.focus();
-    }, 50);
   };
 
   const chooseTreatment = (treatmentId: string) => {
@@ -98,7 +172,6 @@ export default function BookingWizard() {
 
   const validateCustomer = (): keyof CustomerState | null => {
     const nextErrors: Partial<Record<keyof CustomerState, string>> = {};
-
     if (!customer.name.trim()) nextErrors.name = "Skriv dit navn.";
     if (!customer.phone.trim()) nextErrors.phone = "Skriv dit telefonnummer.";
     else if (!isValidPhone(customer.phone))
@@ -123,6 +196,12 @@ export default function BookingWizard() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null);
+
+    if (!selectedTreatmentObject || !selectedEmployeeObject || !selectedDate || !selectedTime) {
+      setError("Bookingflowet mangler valg. Start fra toppen.");
+      return;
+    }
 
     const firstInvalidField = validateCustomer();
     if (firstInvalidField) {
@@ -132,21 +211,38 @@ export default function BookingWizard() {
 
     setSubmitting(true);
 
-    // Mock API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          treatmentId: selectedTreatmentObject.id,
+          employeeId: selectedEmployeeObject.id,
+          date: selectedDate,
+          time: selectedTime,
+          customerName: customer.name.trim(),
+          customerPhone: customer.phone.trim(),
+          customerEmail: customer.email.trim(),
+          notes: customer.notes.trim(),
+        }),
+      });
 
-    // For a real implementation, you'd POST this to an API endpoint that sends an email via Resend
-    console.log("Booking submitted:", {
-      treatment: selectedTreatmentObject?.name,
-      employee: selectedEmployeeObject?.name,
-      date: selectedDate,
-      time: selectedTime,
-      customer,
-    });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Booking kunne ikke gennemføres.");
+      }
 
-    setSuccessId(`BK-${Math.floor(Math.random() * 10000)}`);
-    setSubmitting(false);
-    goToStep(4);
+      setSuccessId(payload.booking?.id ?? "OK");
+      goToStep(4);
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Booking kunne ikke gennemføres."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const reset = () => {
@@ -158,6 +254,7 @@ export default function BookingWizard() {
     setAvailableSlots([]);
     setCustomer({ name: "", phone: "", email: "", notes: "" });
     setFieldErrors({});
+    setError(null);
     setSuccessId(null);
   };
 
@@ -166,7 +263,7 @@ export default function BookingWizard() {
       <div className="flex items-center justify-between gap-4 text-muted-foreground">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.28em] transition-colors hover:text-[#7B5129]"
+          className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.28em] transition-colors hover:text-[var(--color-accent)]"
         >
           <ArrowLeft className="h-4 w-4" />
           Tilbage til forsiden
@@ -174,9 +271,11 @@ export default function BookingWizard() {
       </div>
 
       <div className="space-y-3 text-center">
-        <div className="section-label">[ Book tid ]</div>
+        <div className="text-[11px] uppercase tracking-[0.3em] text-[var(--color-accent)]">
+          [ Book tid ]
+        </div>
         <div className="mx-auto max-w-[820px] space-y-3">
-          <h1 className="font-serif text-[38px] leading-[0.98] tracking-[-0.04em] text-foreground sm:text-[46px] lg:text-[58px]">
+          <h1 className="text-[38px] font-bold leading-[0.98] tracking-[-0.04em] text-foreground sm:text-[46px] lg:text-[58px]">
             Booking hos FRISØR KBH
           </h1>
           <p className="mx-auto max-w-[760px] text-[15px] leading-[1.7] text-muted-foreground sm:text-[17px]">
@@ -186,9 +285,9 @@ export default function BookingWizard() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-[28px] border border-border bg-card/95 shadow-[0_16px_40px_rgba(47,33,27,0.07)]">
+      <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[var(--color-card)]/80 shadow-[0_16px_40px_rgba(0,0,0,0.3)] backdrop-blur-sm">
         <nav aria-label="Booking trin">
-          <ol className="grid grid-cols-2 border-b border-border md:grid-cols-4">
+          <ol className="grid grid-cols-2 border-b border-white/10 md:grid-cols-4">
             {stepLabels.map((label, index) => {
               const active = step === index;
               const completed = step > index || step === 4;
@@ -202,8 +301,8 @@ export default function BookingWizard() {
                     className={cn(
                       "flex h-11 w-11 items-center justify-center rounded-full border text-[15px] font-semibold transition-all md:h-12 md:w-12 md:text-[16px]",
                       active || completed
-                        ? "border-[#7B5129] bg-[#7B5129] text-white"
-                        : "border-border bg-background text-muted-foreground"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white"
+                        : "border-white/20 bg-white/5 text-muted-foreground"
                     )}
                     aria-hidden="true"
                   >
@@ -218,14 +317,41 @@ export default function BookingWizard() {
           </ol>
         </nav>
 
-        <div className="bg-white px-4 py-6 md:px-7 md:py-7 lg:px-8 lg:py-8">
-          {step === 0 ? (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="px-4 py-6 md:px-7 md:py-7 lg:px-8 lg:py-8">
+          {error ? (
+            <div
+              ref={errorAlertRef}
+              role="alert"
+              tabIndex={-1}
+              className="mb-6 rounded-[18px] border border-red-500/30 bg-red-500/10 px-4 py-3 text-[14px] text-red-400 outline-none"
+            >
+              {error}
+            </div>
+          ) : null}
+
+          {loadingCatalog ? (
+            <p
+              className="py-10 text-center text-[15px] text-muted-foreground"
+              aria-live="polite"
+            >
+              Henter behandlinger...
+            </p>
+          ) : null}
+
+          {!loadingCatalog && !catalog ? (
+            <p className="py-10 text-center text-[15px] text-red-400" role="alert">
+              Behandlinger kunne ikke indlæses. Prøv igen senere.
+            </p>
+          ) : null}
+
+          {/* ── Step 0: Choose Treatment ── */}
+          {!loadingCatalog && catalog && step === 0 ? (
+            <div className="space-y-6">
               <div className="space-y-2 text-center">
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="font-serif text-[36px] leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
                 >
                   Vælg behandling
                 </h2>
@@ -233,23 +359,22 @@ export default function BookingWizard() {
                   Vælg den behandling, der passer bedst til dit besøg.
                 </p>
               </div>
-
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                {services.map((treatment) => (
+                {allTreatments.map((treatment) => (
                   <button
                     key={treatment.id}
                     type="button"
                     onClick={() => chooseTreatment(treatment.id)}
-                    className="rounded-[22px] border border-border bg-background px-5 py-5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7B5129]/60 hover:shadow-[0_14px_24px_rgba(47,33,27,0.06)]"
+                    className="rounded-[22px] border border-white/10 bg-white/5 px-5 py-5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)]/60 hover:shadow-[0_14px_24px_rgba(0,0,0,0.2)]"
                   >
-                    <h3 className="font-serif text-[28px] leading-none text-foreground">
+                    <h3 className="text-[24px] font-bold leading-none text-foreground md:text-[28px]">
                       {treatment.name}
                     </h3>
-                    <p className="mt-3 text-[14px] font-medium text-[#7B5129]">
+                    <p className="mt-3 text-[14px] font-medium text-[var(--color-accent)]">
                       {treatment.price}
                     </p>
                     <p className="mt-1 text-[14px] text-muted-foreground">
-                      Ca. {treatment.duration}
+                      Ca. {treatment.durationMinutes} min
                     </p>
                   </button>
                 ))}
@@ -257,13 +382,14 @@ export default function BookingWizard() {
             </div>
           ) : null}
 
-          {step === 1 ? (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* ── Step 1: Choose Employee ── */}
+          {!loadingCatalog && catalog && step === 1 ? (
+            <div className="space-y-6">
               <div className="space-y-2 text-center">
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="font-serif text-[36px] leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
                 >
                   Vælg medarbejder
                 </h2>
@@ -271,18 +397,18 @@ export default function BookingWizard() {
                   Vælg den medarbejder du ønsker tid hos.
                 </p>
               </div>
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-2 max-w-2xl mx-auto">
-                {employees.map((employee) => (
+              <div className="mx-auto grid max-w-2xl gap-3 md:grid-cols-2">
+                {allEmployees.map((employee) => (
                   <button
                     key={employee.id}
                     type="button"
                     onClick={() => chooseEmployee(employee.id)}
-                    className="rounded-[22px] border border-border bg-background px-5 py-6 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7B5129]/60 hover:shadow-[0_14px_24px_rgba(47,33,27,0.06)]"
+                    className="rounded-[22px] border border-white/10 bg-white/5 px-5 py-6 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)]/60 hover:shadow-[0_14px_24px_rgba(0,0,0,0.2)]"
                   >
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f8f6f3] text-[#7B5129]">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
                       <UserRound className="h-5 w-5" />
                     </div>
-                    <h3 className="font-serif text-[28px] leading-none text-foreground">
+                    <h3 className="text-[24px] font-bold leading-none text-foreground md:text-[28px]">
                       {employee.name}
                     </h3>
                   </button>
@@ -291,13 +417,14 @@ export default function BookingWizard() {
             </div>
           ) : null}
 
-          {step === 2 ? (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* ── Step 2: Choose Date & Time ── */}
+          {!loadingCatalog && catalog && step === 2 ? (
+            <div className="space-y-6">
               <div className="space-y-2 text-center">
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="font-serif text-[36px] leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
                 >
                   Vælg dato & tid
                 </h2>
@@ -312,10 +439,11 @@ export default function BookingWizard() {
                   onChange={(date) => {
                     setSelectedDate(date);
                     setSelectedTime(null);
+                    setError(null);
                   }}
                 />
 
-                <div className="rounded-[22px] border border-border bg-background p-4 md:p-5">
+                <div className="rounded-[22px] border border-white/10 bg-white/5 p-4 md:p-5">
                   <div className="mb-4 flex items-center gap-2.5 text-muted-foreground">
                     <Clock3 className="h-4 w-4" />
                     <span className="text-[12px] uppercase tracking-[0.16em]">
@@ -326,6 +454,10 @@ export default function BookingWizard() {
                   {!selectedDate ? (
                     <p className="text-[14px] leading-[1.7] text-muted-foreground">
                       Vælg først en dato for at se ledige tider.
+                    </p>
+                  ) : loadingSlots ? (
+                    <p className="text-[14px] leading-[1.7] text-muted-foreground">
+                      Henter ledige tider...
                     </p>
                   ) : availableSlots.length === 0 ? (
                     <p className="text-[14px] leading-[1.7] text-muted-foreground">
@@ -348,8 +480,8 @@ export default function BookingWizard() {
                             className={cn(
                               "rounded-[14px] border px-3.5 py-2.5 text-[14px] font-medium transition-all",
                               selectedTime === slot
-                                ? "border-[#7B5129] bg-[#7B5129] text-white"
-                                : "border-border bg-background text-muted-foreground hover:border-[#7B5129]/60 hover:bg-background"
+                                ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white"
+                                : "border-white/10 bg-white/5 text-muted-foreground hover:border-[var(--color-accent)]/60"
                             )}
                           >
                             {slot}
@@ -363,13 +495,14 @@ export default function BookingWizard() {
             </div>
           ) : null}
 
-          {step === 3 ? (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* ── Step 3: Customer Details ── */}
+          {!loadingCatalog && catalog && step === 3 ? (
+            <div className="space-y-6">
               <div className="space-y-2 text-center">
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="font-serif text-[36px] leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
                 >
                   Dine oplysninger
                 </h2>
@@ -379,8 +512,8 @@ export default function BookingWizard() {
               </div>
 
               <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-                <div className="rounded-[22px] border border-border bg-background p-5 md:p-6">
-                  <h3 className="font-serif text-[28px] text-foreground">
+                <div className="rounded-[22px] border border-white/10 bg-white/5 p-5 md:p-6">
+                  <h3 className="text-[24px] font-bold text-foreground">
                     Bookingoversigt
                   </h3>
                   <dl className="mt-5 space-y-3 text-[14px] leading-[1.7] text-muted-foreground">
@@ -388,25 +521,25 @@ export default function BookingWizard() {
                       <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                         Behandling
                       </dt>
-                      <dd>{selectedTreatmentObject?.name}</dd>
+                      <dd className="text-foreground">{selectedTreatmentObject?.name}</dd>
                     </div>
                     <div>
                       <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                         Pris
                       </dt>
-                      <dd>{selectedTreatmentObject?.price}</dd>
+                      <dd className="text-foreground">{selectedTreatmentObject?.price}</dd>
                     </div>
                     <div>
                       <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                         Medarbejder
                       </dt>
-                      <dd>{selectedEmployeeObject?.name}</dd>
+                      <dd className="text-foreground">{selectedEmployeeObject?.name}</dd>
                     </div>
                     <div>
                       <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                         Dato
                       </dt>
-                      <dd>
+                      <dd className="text-foreground">
                         {selectedDate ? formatDateLabel(selectedDate) : ""}
                       </dd>
                     </div>
@@ -414,14 +547,14 @@ export default function BookingWizard() {
                       <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                         Tid
                       </dt>
-                      <dd>{selectedTime}</dd>
+                      <dd className="text-foreground">{selectedTime}</dd>
                     </div>
                   </dl>
                 </div>
 
                 <form
                   onSubmit={handleSubmit}
-                  className="grid gap-4 rounded-[22px] border border-border bg-background p-5 md:p-6"
+                  className="grid gap-4 rounded-[22px] border border-white/10 bg-white/5 p-5 md:p-6"
                 >
                   <label className="grid gap-2">
                     <span className="text-[14px] font-medium text-muted-foreground">
@@ -438,18 +571,12 @@ export default function BookingWizard() {
                       }
                       onChange={(event) => {
                         clearFieldError("name");
-                        setCustomer((current) => ({
-                          ...current,
-                          name: event.target.value,
-                        }));
+                        setCustomer((c) => ({ ...c, name: event.target.value }));
                       }}
-                      className="rounded-[14px] border border-border px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[#7B5129]"
+                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
                     />
                     {fieldErrors.name ? (
-                      <span
-                        id="booking-name-error"
-                        className="text-[13px] text-[#a45445]"
-                      >
+                      <span id="booking-name-error" className="text-[13px] text-red-400">
                         {fieldErrors.name}
                       </span>
                     ) : null}
@@ -471,18 +598,12 @@ export default function BookingWizard() {
                       }
                       onChange={(event) => {
                         clearFieldError("phone");
-                        setCustomer((current) => ({
-                          ...current,
-                          phone: event.target.value,
-                        }));
+                        setCustomer((c) => ({ ...c, phone: event.target.value }));
                       }}
-                      className="rounded-[14px] border border-border px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[#7B5129]"
+                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
                     />
                     {fieldErrors.phone ? (
-                      <span
-                        id="booking-phone-error"
-                        className="text-[13px] text-[#a45445]"
-                      >
+                      <span id="booking-phone-error" className="text-[13px] text-red-400">
                         {fieldErrors.phone}
                       </span>
                     ) : null}
@@ -504,18 +625,12 @@ export default function BookingWizard() {
                       }
                       onChange={(event) => {
                         clearFieldError("email");
-                        setCustomer((current) => ({
-                          ...current,
-                          email: event.target.value,
-                        }));
+                        setCustomer((c) => ({ ...c, email: event.target.value }));
                       }}
-                      className="rounded-[14px] border border-border px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[#7B5129]"
+                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
                     />
                     {fieldErrors.email ? (
-                      <span
-                        id="booking-email-error"
-                        className="text-[13px] text-[#a45445]"
-                      >
+                      <span id="booking-email-error" className="text-[13px] text-red-400">
                         {fieldErrors.email}
                       </span>
                     ) : null}
@@ -529,13 +644,10 @@ export default function BookingWizard() {
                       id="booking-notes"
                       value={customer.notes}
                       onChange={(event) =>
-                        setCustomer((current) => ({
-                          ...current,
-                          notes: event.target.value,
-                        }))
+                        setCustomer((c) => ({ ...c, notes: event.target.value }))
                       }
                       rows={4}
-                      className="rounded-[14px] border border-border px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[#7B5129]"
+                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
                     />
                   </label>
 
@@ -543,14 +655,14 @@ export default function BookingWizard() {
                     <button
                       type="button"
                       onClick={() => goToStep(2)}
-                      className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-border bg-background px-6 text-[15px] font-medium transition-colors hover:bg-card"
+                      className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 text-[15px] font-medium transition-colors hover:bg-white/10"
                     >
                       Tilbage
                     </button>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#7B5129] px-6 text-[15px] font-medium text-white transition-colors hover:bg-[#684322] disabled:cursor-wait disabled:opacity-70"
+                      className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--color-accent)] px-6 text-[15px] font-medium text-white transition-colors hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
                     >
                       {submitting ? "Bekræfter..." : "Bekræft booking"}
                     </button>
@@ -560,54 +672,54 @@ export default function BookingWizard() {
             </div>
           ) : null}
 
+          {/* ── Step 4: Success ── */}
           {step === 4 ? (
-            <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#edf7ee] text-[#4d8c55]">
+            <div className="space-y-6 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 text-green-400">
                 <CheckCircle2 className="h-8 w-8" />
               </div>
               <div className="space-y-2">
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="font-serif text-[36px] leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
                 >
                   Booking bekræftet
                 </h2>
                 <p className="mx-auto max-w-[640px] text-[15px] leading-[1.7] text-muted-foreground md:text-[16px]">
-                  Tak for din booking! Vi har modtaget din forespørgsel og glæder os til at se dig i salonen.
+                  Tak for din booking! Vi har sendt en bekræftelse til{" "}
+                  <strong className="text-foreground">{customer.email}</strong>.
                 </p>
               </div>
-              <div className="mx-auto max-w-[640px] rounded-[22px] border border-border bg-background p-5 text-left md:p-6">
+              <div className="mx-auto max-w-[640px] rounded-[22px] border border-white/10 bg-white/5 p-5 text-left md:p-6">
                 <p className="mb-4 text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                   Booking ID
                 </p>
-                <p className="mb-6 text-[16px] text-muted-foreground">
-                  {successId}
-                </p>
-                <dl className="grid gap-4 sm:grid-cols-2 text-[15px] leading-[1.7] text-muted-foreground">
+                <p className="mb-6 text-[16px] text-muted-foreground">{successId}</p>
+                <dl className="grid gap-4 text-[15px] leading-[1.7] text-muted-foreground sm:grid-cols-2">
                   <div>
                     <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                       Behandling
                     </dt>
-                    <dd>{selectedTreatmentObject?.name}</dd>
+                    <dd className="text-foreground">{selectedTreatmentObject?.name}</dd>
                   </div>
                   <div>
                     <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                       Pris
                     </dt>
-                    <dd>{selectedTreatmentObject?.price}</dd>
+                    <dd className="text-foreground">{selectedTreatmentObject?.price}</dd>
                   </div>
                   <div>
                     <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                       Medarbejder
                     </dt>
-                    <dd>{selectedEmployeeObject?.name}</dd>
+                    <dd className="text-foreground">{selectedEmployeeObject?.name}</dd>
                   </div>
                   <div>
                     <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                       Dato
                     </dt>
-                    <dd>
+                    <dd className="text-foreground">
                       {selectedDate ? formatDateLabel(selectedDate) : ""}
                     </dd>
                   </div>
@@ -615,13 +727,13 @@ export default function BookingWizard() {
                     <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                       Tid
                     </dt>
-                    <dd>{selectedTime}</dd>
+                    <dd className="text-foreground">{selectedTime}</dd>
                   </div>
                   <div>
                     <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
                       Navn
                     </dt>
-                    <dd>{customer.name}</dd>
+                    <dd className="text-foreground">{customer.name}</dd>
                   </div>
                 </dl>
               </div>
@@ -629,13 +741,13 @@ export default function BookingWizard() {
                 <button
                   type="button"
                   onClick={reset}
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-border bg-background px-6 text-[15px] font-medium transition-colors hover:bg-card"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 text-[15px] font-medium transition-colors hover:bg-white/10"
                 >
                   Opret ny booking
                 </button>
                 <Link
                   href="/"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[#7B5129] px-6 text-[15px] font-medium text-white transition-colors hover:bg-[#684322]"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--color-accent)] px-6 text-[15px] font-medium text-white transition-colors hover:brightness-110"
                 >
                   Tilbage til forsiden
                 </Link>
