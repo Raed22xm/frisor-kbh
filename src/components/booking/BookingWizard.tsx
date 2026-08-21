@@ -124,7 +124,31 @@ export default function BookingWizard() {
       })
       .then((payload) => {
         if (!cancelled) {
-          setAvailableSlots(Array.isArray(payload.slots) ? payload.slots : []);
+          const fetchedSlots = Array.isArray(payload.slots) ? payload.slots : [];
+          
+          // Filter out past slots if the selected date is today
+          const now = new Date();
+          const [year, month, day] = selectedDate.split('-').map(Number);
+          
+          let validSlots = fetchedSlots;
+          
+          if (
+            year === now.getFullYear() &&
+            month === now.getMonth() + 1 &&
+            day === now.getDate()
+          ) {
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            validSlots = fetchedSlots.filter((slot: string) => {
+              const [slotHour, slotMinute] = slot.split(':').map(Number);
+              if (slotHour > currentHour) return true;
+              if (slotHour === currentHour && slotMinute > currentMinute) return true;
+              return false;
+            });
+          }
+          
+          setAvailableSlots(validSlots);
         }
       })
       .catch((fetchError: Error) => {

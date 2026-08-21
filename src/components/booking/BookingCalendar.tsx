@@ -91,18 +91,16 @@ export default function BookingCalendar({ value, onChange }: BookingCalendarProp
             <button
               key={key}
               type="button"
+              disabled={disabled}
               aria-label={formatDateLabel(key)}
               aria-pressed={selected}
-              onClick={() => {
-                console.log("Clicked:", key, "Disabled state was:", disabled);
-                onChange(key);
-              }}
+              onClick={() => onChange(key)}
               className={cn(
                 'aspect-square rounded-[14px] border text-[13px] font-medium transition-all md:text-[14px]',
                 selected
                   ? 'border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                  : 'border-gray-200 bg-white text-gray-900 hover:border-emerald-600/60 hover:bg-gray-50',
-                disabled && 'cursor-not-allowed border-gray-100 bg-gray-50/50 text-gray-400 hover:border-gray-100 hover:bg-gray-50/50'
+                  : 'border-emerald-200 bg-emerald-50/50 text-emerald-900 hover:border-emerald-500 hover:bg-emerald-100',
+                disabled && 'cursor-not-allowed border-gray-100 bg-gray-100 text-gray-300 hover:border-gray-100 hover:bg-gray-100'
               )}
             >
               {day.getDate()}

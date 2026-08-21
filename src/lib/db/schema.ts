@@ -135,3 +135,14 @@ export const adminUsers = pgTable("admin_users", {
     .notNull()
     .defaultNow(),
 });
+
+export const galleryImages = pgTable("gallery_images", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  url: text("url").notNull(),
+  altText: text("alt_text").notNull().default(""),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .notNull()
+    .defaultNow(),
+});
