@@ -385,7 +385,7 @@ export default function BookingWizard() {
 
       const payload = await response.json();
       if (!response.ok) {
-        throw new Error(payload.error ?? "Booking kunne ikke gennemføres. Prøv igen, eller ring til os på +45 52 61 00 78.");
+        throw new Error(payload.error ?? `Booking kunne ikke gennemføres. Prøv igen, eller ring til os på ${siteConfig.contact.phone}.`);
       }
 
       setSuccessId(payload.booking?.id ?? "OK");
@@ -395,7 +395,7 @@ export default function BookingWizard() {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Booking kunne ikke gennemføres. Prøv igen, eller ring til os på +45 52 61 00 78."
+          : `Booking kunne ikke gennemføres. Prøv igen, eller ring til os på ${siteConfig.contact.phone}.`
       );
     } finally {
       setSubmitting(false);
@@ -544,7 +544,7 @@ export default function BookingWizard() {
 
           {!loadingCatalog && !catalog ? (
             <p className="py-10 text-center text-[15px] text-red-800" role="alert">
-              Vi kunne ikke hente behandlinger lige nu. Prøv igen senere, eller ring til os på +45 52 61 00 78.
+              Vi kunne ikke hente behandlinger lige nu. Prøv igen senere, eller ring til os på {siteConfig.contact.phone}.
             </p>
           ) : null}
 
@@ -676,7 +676,7 @@ export default function BookingWizard() {
                     </p>
                   ) : availableSlots.length === 0 ? (
                     <p className="text-[14px] leading-[1.7] text-gray-500">
-                      Ingen ledige tider på den valgte dag. Prøv en anden dato, eller ring til os på +45 52 61 00 78.
+                      Ingen ledige tider på den valgte dag. Prøv en anden dato, eller ring til os på {siteConfig.contact.phone}.
                     </p>
                   ) : (
                     <div className="space-y-3">
@@ -821,7 +821,7 @@ export default function BookingWizard() {
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel"
-                      placeholder="Fx 52 61 00 78…"
+                      placeholder="Fx 42 20 24 29…"
                       required
                       value={customer.phone}
                       aria-invalid={fieldErrors.phone ? true : undefined}

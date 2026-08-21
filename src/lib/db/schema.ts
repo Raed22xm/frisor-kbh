@@ -7,6 +7,7 @@ import {
   timestamp,
   uuid,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // ── Enums ──────────────────────────────────────────────────────────────────────
@@ -137,13 +138,23 @@ export const adminUsers = pgTable("admin_users", {
     .defaultNow(),
 });
 
-export const galleryImages = pgTable("gallery_images", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  url: text("url").notNull(),
-  altText: text("alt_text").notNull().default(""),
-  sortOrder: integer("sort_order").notNull().default(0),
-  active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .notNull()
-    .defaultNow(),
-});
+export const galleryImages = pgTable(
+  "gallery_images",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    url: text("url").notNull(),
+    storagePath: text("storage_path"),
+    fileHash: text("file_hash"),
+    altText: text("alt_text").notNull().default(""),
+    caption: text("caption").notNull().default(""),
+    sortOrder: integer("sort_order").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("gallery_images_file_hash_idx").on(table.fileHash),
+    index("gallery_images_sort_order_idx").on(table.sortOrder),
+  ]
+);

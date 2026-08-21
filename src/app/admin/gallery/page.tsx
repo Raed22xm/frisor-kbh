@@ -1,69 +1,42 @@
+import { asc } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { galleryImages } from "@/lib/db/schema";
-import { desc } from "drizzle-orm";
 import GalleryUploader from "@/components/admin/GalleryUploader";
-import Image from "next/image";
+import { GalleryManager } from "@/components/admin/GalleryManager";
 
 export const dynamic = "force-dynamic";
 
 export default async function GalleryPage() {
-  const db = getDb();
-  
-  const images = await db
+  const images = await getDb()
     .select()
     .from(galleryImages)
-    .orderBy(desc(galleryImages.createdAt));
+    .orderBy(asc(galleryImages.sortOrder), asc(galleryImages.createdAt));
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Gallery</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Upload and manage photos for your portfolio.
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Galleri</h1>
+        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+          Tilføj, redigér, sortér, skjul og slet billeder. Ændringer vises direkte på forsiden.
         </p>
       </div>
-      
-      {/* Upload Section */}
+
       <GalleryUploader />
 
-      {/* Gallery Grid */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-medium text-gray-900">Dine Billeder ({images.length})</h2>
-        
-        {images.length === 0 ? (
-          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
-            <p className="text-sm text-gray-500">Du har ikke uploadet nogen billeder endnu.</p>
+      <section className="space-y-4" aria-labelledby="gallery-manager-title">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h2 id="gallery-manager-title" className="text-lg font-semibold text-gray-900">
+              Dine billeder ({images.length})
+            </h2>
+            <p className="mt-1 text-xs text-gray-500">Brug pilene til at ændre rækkefølgen på forsiden.</p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {images.map((image) => (
-              <div key={image.id} className="group relative aspect-[4/5] overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
-                <Image
-                  src={image.url}
-                  alt={image.altText || "Gallery image"}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  unoptimized // Supabase URLs don't need Next.js optimization locally
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 transition-opacity group-hover:opacity-100" />
-                
-                <div className="absolute bottom-3 left-3 opacity-0 transition-opacity group-hover:opacity-100">
-                  {image.active ? (
-                    <span className="inline-flex items-center rounded-full border border-emerald-400 bg-emerald-500/80 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
-                      Aktiv
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center rounded-full border border-gray-400 bg-gray-500/80 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
-                      Skjult
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        </div>
+        <GalleryManager
+          key={images.map((image) => `${image.id}:${image.sortOrder}:${image.active}:${image.altText}:${image.caption}`).join("|")}
+          images={images}
+        />
+      </section>
     </div>
   );
 }

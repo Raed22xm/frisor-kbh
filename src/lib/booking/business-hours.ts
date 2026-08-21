@@ -15,8 +15,8 @@ export function getBusinessHoursForDate(date: string): BusinessHours | null {
 
   const dayOfWeek = new Date(`${date}T12:00:00Z`).getUTCDay();
   if (dayOfWeek === 0) return null; // Sunday — closed
-  if (dayOfWeek === 6) return { startHour: 9, endHour: 15 }; // Saturday — short day
-  return { startHour: 9, endHour: 18 }; // Weekdays
+  if (dayOfWeek === 6) return { startHour: 9, endHour: 16 }; // Saturday — short day
+  return { startHour: 10, endHour: 18 }; // Weekdays
 }
 
 /** Get today's date key in Copenhagen timezone. */

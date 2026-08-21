@@ -1,4 +1,5 @@
 import type { BookingResult } from "@/lib/booking/create-booking";
+import { siteConfig } from "@/data/site";
 import { sendEmail } from "./provider";
 
 function formatDateDanish(dateStr: string): string {
@@ -54,7 +55,7 @@ function buildConfirmationHtml(booking: BookingResult): string {
 
       <p style="margin:24px 0 0;font-size:13px;color:#999;line-height:1.6;">
         Booking ID: ${booking.id}<br/>
-        Har du brug for at ændre din tid? Ring til os på <strong>+45 52 61 00 78</strong>.
+        Har du brug for at ændre din tid? Ring til os på <strong>${siteConfig.contact.phone}</strong>.
       </p>
     </div>
 
@@ -74,6 +75,6 @@ export async function sendBookingConfirmation(
     to: booking.customerEmail,
     subject: `Booking bekræftet — ${booking.treatmentName} ${booking.date} kl. ${booking.time}`,
     html: buildConfirmationHtml(booking),
-    text: `Hej ${booking.customerName}, din booking hos FRISØR KBH er bekræftet.\n\nBehandling: ${booking.treatmentName}\nDato: ${formatDateDanish(booking.date)}\nTid: ${booking.time}\nFrisør: ${booking.employeeName}\n\nBooking ID: ${booking.id}\n\nHar du spørgsmål? Ring til os på +45 52 61 00 78.`,
+    text: `Hej ${booking.customerName}, din booking hos FRISØR KBH er bekræftet.\n\nBehandling: ${booking.treatmentName}\nDato: ${formatDateDanish(booking.date)}\nTid: ${booking.time}\nFrisør: ${booking.employeeName}\n\nBooking ID: ${booking.id}\n\nHar du spørgsmål? Ring til os på ${siteConfig.contact.phone}.`,
   });
 }

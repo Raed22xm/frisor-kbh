@@ -15,7 +15,7 @@ export function Services() {
         <ScrollReveal>
           <SectionHeading 
               subtitle="Vores priser" 
-            title="Klipning & Styling" 
+            title="Priser & behandlinger"
             centered 
           />
         </ScrollReveal>

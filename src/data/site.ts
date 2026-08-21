@@ -1,4 +1,4 @@
-import { SiteConfig, NavigationItem, ServiceItem, OpeningHoursItem, BenefitItem, GalleryItem } from "@/types/site";
+import { SiteConfig, NavigationItem, ServiceItem, OpeningHoursItem, BenefitItem } from "@/types/site";
 
 // ---------------------------------------------------------------------------
 // Helper — formats a numeric price as a Danish display string
@@ -18,7 +18,7 @@ export const siteConfig: SiteConfig = {
   // REC-13: reads from environment so staging/production use the correct domain
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://frisor-kbh.dk",
   contact: {
-    phone: "+45 52 61 00 78",
+    phone: "+45 42 20 24 29",
     // REC-01: real email — update when confirmed
     email: "booking@frisor-kbh.dk",
     address: "Vesterbrogade 171",
@@ -58,7 +58,7 @@ export const services: ServiceItem[] = [
   {
     id: "herreklip",
     name: "Herreklip",
-    price: 240,
+    price: 200,
     description: "Klassisk herreklip med saks og maskine, afsluttet med styling.",
     duration: "30 min",
     durationMinutes: 30,
@@ -67,9 +67,20 @@ export const services: ServiceItem[] = [
     imageAlt: "Kunde med færdig klassisk herreklip",
   },
   {
-    id: "herreklip-skaeg",
-    name: "Herreklip og skæg",
-    price: 320,
+    id: "skaeg",
+    name: "Skæg",
+    price: 125,
+    description: "Trimning og formning af skæg, så linjerne står skarpt.",
+    duration: "15 min",
+    durationMinutes: 15,
+    featured: true,
+    image: "/images/services/skaegtrimning-customer.webp",
+    imageAlt: "Kunde med færdigtrimmet og formet skæg",
+  },
+  {
+    id: "haar-og-skaeg",
+    name: "Hår og skæg",
+    price: 300,
     description: "Komplet behandling med klipning, skægtrimning og skarpe kanter.",
     duration: "45 min",
     durationMinutes: 45,
@@ -78,9 +89,9 @@ export const services: ServiceItem[] = [
     imageAlt: "Kunde med frisk herreklip og formet skæg",
   },
   {
-    id: "pensionistklip",
-    name: "Pensionistklip",
-    price: 150,
+    id: "pensionist",
+    name: "Pensionist",
+    price: 180,
     description: "Rolig og grundig klipning til pensionister med fokus på et pænt, naturligt resultat.",
     duration: "30 min",
     durationMinutes: 30,
@@ -88,24 +99,44 @@ export const services: ServiceItem[] = [
     imageAlt: "Ældre kunde med færdig klassisk klipning og sølvgråt hår",
   },
   {
-    id: "skin-fade",
-    name: "Skin fade",
-    price: 280,
-    description: "Præcis fade med rene overgange og moderne finish.",
-    duration: "45 min",
-    durationMinutes: 45,
-    image: "/images/services/skin-fade-customer.webp",
-    imageAlt: "Kunde med færdig skin fade",
+    id: "pensionist-med-saks",
+    name: "Pensionist (med saks)",
+    price: 200,
+    description: "Klassisk pensionistklip udført med saks for et naturligt resultat.",
+    duration: "30 min",
+    durationMinutes: 30,
+    image: "/images/services/pensionist-saks-customer-v2.jpg",
+    imageAlt: "Pensionist med klassisk sakseklip",
   },
   {
-    id: "skaegtrimning",
-    name: "Skægtrimning",
+    id: "maskineklip",
+    name: "Maskineklip",
     price: 100,
-    description: "Trimning og formning af skæg, så linjerne står skarpt.",
+    description: "Ensartet, kort klipning med maskine.",
     duration: "15 min",
     durationMinutes: 15,
-    image: "/images/services/skaegtrimning-customer.webp",
-    imageAlt: "Kunde med færdigtrimmet og formet fuldskæg",
+    image: "/images/services/maskineklip-customer-v2.jpg",
+    imageAlt: "Kunde med kort maskineklip",
+  },
+  {
+    id: "boerneklip-under-10",
+    name: "Børneklip (under 10 år)",
+    price: 180,
+    description: "Tryg og rolig klipning for børn under 10 år.",
+    duration: "30 min",
+    durationMinutes: 30,
+    image: "/images/services/boerneklip-customer-v2.jpg",
+    imageAlt: "Barn med færdig børneklipning",
+  },
+  {
+    id: "haarfjerning-voks-traad",
+    name: "Hårfjerning med voks og tråd",
+    price: 50,
+    description: "Præcis hårfjerning med voks og tråd.",
+    duration: "15 min",
+    durationMinutes: 15,
+    image: "/images/services/haarfjerning-voks-traad-customer-v2.jpg",
+    imageAlt: "Hårfjerning med tråd",
   },
 ];
 
@@ -139,25 +170,13 @@ export const benefits: BenefitItem[] = [
 // Opening Hours  (REC-01 + REC-15: structured openTime/closeTime for JSON-LD)
 // ---------------------------------------------------------------------------
 export const openingHours: OpeningHoursItem[] = [
-  { day: "Mandag",  openTime: "09:00", closeTime: "18:00", hours: "09:00 – 18:00", schemaDay: "Monday" },
-  { day: "Tirsdag", openTime: "09:00", closeTime: "18:00", hours: "09:00 – 18:00", schemaDay: "Tuesday" },
-  { day: "Onsdag",  openTime: "09:00", closeTime: "18:00", hours: "09:00 – 18:00", schemaDay: "Wednesday" },
-  { day: "Torsdag", openTime: "09:00", closeTime: "18:00", hours: "09:00 – 18:00", schemaDay: "Thursday" },
-  { day: "Fredag",  openTime: "09:00", closeTime: "18:00", hours: "09:00 – 18:00", schemaDay: "Friday" },
-  { day: "Lørdag",  openTime: "09:00", closeTime: "15:00", hours: "09:00 – 15:00", schemaDay: "Saturday" },
+  { day: "Mandag",  openTime: "10:00", closeTime: "18:00", hours: "10:00 – 18:00", schemaDay: "Monday" },
+  { day: "Tirsdag", openTime: "10:00", closeTime: "18:00", hours: "10:00 – 18:00", schemaDay: "Tuesday" },
+  { day: "Onsdag",  openTime: "10:00", closeTime: "18:00", hours: "10:00 – 18:00", schemaDay: "Wednesday" },
+  { day: "Torsdag", openTime: "10:00", closeTime: "18:00", hours: "10:00 – 18:00", schemaDay: "Thursday" },
+  { day: "Fredag",  openTime: "10:00", closeTime: "18:00", hours: "10:00 – 18:00", schemaDay: "Friday" },
+  { day: "Lørdag",  openTime: "09:00", closeTime: "16:00", hours: "09:00 – 16:00", schemaDay: "Saturday" },
   { day: "Søndag",  hours: "Lukket", isClosed: true, schemaDay: "Sunday" },
-];
-
-// ---------------------------------------------------------------------------
-// Gallery  (REC-06: data-driven from site.ts; images placed in /public/images/gallery/)
-// ---------------------------------------------------------------------------
-export const galleryItems: GalleryItem[] = [
-  { id: "g1", src: "/images/gallery/1.webp", alt: "Klassisk herreklip — siden", caption: "Klassisk herreklip" },
-  { id: "g2", src: "/images/gallery/2.webp", alt: "Skin fade — frontvisning", caption: "Skin fade" },
-  { id: "g3", src: "/images/gallery/3.webp", alt: "Skægtrimning", caption: "Skægtrimning" },
-  { id: "g4", src: "/images/gallery/4.webp", alt: "Herreklip og skæg", caption: "Herreklip & skæg" },
-  { id: "g5", src: "/images/gallery/5.webp", alt: "Frisørsalon interiør", caption: "Salonen" },
-  { id: "g6", src: "/images/gallery/6.webp", alt: "Moderne fade klipning", caption: "Moderne fade" },
 ];
 
 // ---------------------------------------------------------------------------

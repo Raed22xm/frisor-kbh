@@ -50,13 +50,21 @@ export function About() {
               {/* Main Image */}
               <div className="relative aspect-[4/5] md:aspect-square lg:aspect-[4/5] rounded-xl overflow-hidden shadow-2xl z-10 border border-white/[0.08]">
                 <Image
-                  src="/images/about.webp"
-                  alt="FRISØR KBH salon og herreklip"
+                  src="/images/salon-workstation.webp"
+                  alt="Frisørstol og professionel arbejdsstation hos FRISØR KBH"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-5 left-5 rounded-lg border border-white/15 bg-black/65 px-4 py-3 backdrop-blur-md">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-brand-light)]">
+                    Salonen
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-white">
+                    Vesterbrogade 171
+                  </p>
+                </div>
               </div>
               
               {/* Decorative Element */}

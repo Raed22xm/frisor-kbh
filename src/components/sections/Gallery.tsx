@@ -5,11 +5,11 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { galleryItems } from "@/data/site";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { GalleryItem } from "@/types/site";
 
-export function Gallery() {
+export function Gallery({ items }: { items: GalleryItem[] }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -17,8 +17,8 @@ export function Gallery() {
   const lastTriggerRef = useRef<HTMLButtonElement>(null);
 
   const isOpen = lightboxIndex !== null;
-  const total = galleryItems.length;
-  const currentItem = lightboxIndex !== null ? galleryItems[lightboxIndex] : null;
+  const total = items.length;
+  const currentItem = lightboxIndex !== null ? items[lightboxIndex] : null;
 
   const closeLightbox = useCallback(() => {
     setLightboxIndex(null);
@@ -107,7 +107,12 @@ export function Gallery() {
             stagger
             className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-6 lg:grid-cols-3"
           >
-            {galleryItems.map((item, index) => (
+            {items.length === 0 ? (
+              <div className="col-span-full rounded-xl border border-white/[0.08] bg-[var(--color-surface)] px-6 py-12 text-center text-sm text-[var(--color-text-muted)]">
+                Nye billeder kommer snart.
+              </div>
+            ) : null}
+            {items.map((item, index) => (
               <button
                 key={item.id}
                 type="button"
@@ -129,6 +134,7 @@ export function Gallery() {
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    unoptimized={item.src.startsWith("http")}
                     onError={() =>
                       setImgErrors((previous) => ({ ...previous, [item.id]: true }))
                     }
@@ -214,6 +220,7 @@ export function Gallery() {
                   sizes="(max-width: 1024px) 90vw, 900px"
                   className="object-cover"
                   priority
+                  unoptimized={currentItem.src.startsWith("http")}
                 />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[var(--color-surface)] text-[var(--color-text-muted)]">
@@ -236,7 +243,7 @@ export function Gallery() {
           </div>
 
           <div className="absolute bottom-[calc(.5rem+env(safe-area-inset-bottom))] left-1/2 z-20 flex -translate-x-1/2">
-            {galleryItems.map((_, index) => (
+            {items.map((_, index) => (
               <button
                 key={index}
                 type="button"
