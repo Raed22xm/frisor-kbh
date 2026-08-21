@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ServiceItem } from "@/types/site";
 import { Button } from "./Button";
 import { Clock } from "lucide-react";
-import { siteConfig } from "@/data/site";
+import { siteConfig, formatPrice } from "@/data/site";
 import { cn } from "@/lib/utils";
 
 interface ServiceCardProps {
@@ -12,7 +12,7 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({ service, className }: ServiceCardProps) {
-  const { name, price, description, duration, featured, image, imageAlt } = service;
+  const { name, price, priceDisplay, description, duration, featured, image, imageAlt } = service;
 
   return (
     <div
@@ -47,7 +47,7 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
       <div className="flex justify-between items-start mb-5">
         <h3 className="text-xl font-heading text-white pr-4 group-hover:text-[var(--color-brand-light)] transition-colors duration-300">{name}</h3>
         <div className="text-[var(--color-brand-light)] font-bold text-xl whitespace-nowrap">
-          {price}
+          {formatPrice(price, priceDisplay)}
         </div>
       </div>
 

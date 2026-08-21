@@ -18,14 +18,14 @@ export function Hero() {
       {/* Animated gradient blobs for cinematic depth */}
       <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
         <div
-          className="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] rounded-full opacity-[0.07]"
+          className="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] rounded-full opacity-[0.07] animate-blob"
           style={{
             background: "radial-gradient(circle, var(--color-brand-light) 0%, transparent 70%)",
             animation: "float 20s ease-in-out infinite",
           }}
         />
         <div
-          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.05]"
+          className="absolute -bottom-1/4 -left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.05] animate-blob"
           style={{
             background: "radial-gradient(circle, var(--color-brand) 0%, transparent 70%)",
             animation: "float-reverse 25s ease-in-out infinite",

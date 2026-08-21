@@ -21,7 +21,7 @@ export function Footer() {
               {siteConfig.description}
             </p>
             <div className="flex space-x-4">
-              {siteConfig.social.instagram && (
+              {siteConfig.social.instagram && siteConfig.social.instagram.startsWith('http') && (
                 <a
                   href={siteConfig.social.instagram}
                   target="_blank"
@@ -34,7 +34,7 @@ export function Footer() {
                   </svg>
                 </a>
               )}
-              {siteConfig.social.facebook && (
+              {siteConfig.social.facebook && siteConfig.social.facebook.startsWith('http') && (
                 <a
                   href={siteConfig.social.facebook}
                   target="_blank"
@@ -120,7 +120,7 @@ export function Footer() {
             &copy; {currentYear} {siteConfig.businessName}. Alle rettigheder forbeholdes.
           </p>
           <div className="text-[var(--color-text-muted)] text-xs hover:text-white transition-colors">
-            <a href="#">Privatlivspolitik</a>
+            <a href="/privatlivspolitik">Privatlivspolitik</a>
           </div>
         </div>
       </Container>

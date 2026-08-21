@@ -7,9 +7,9 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 export function BookingCTA() {
   return (
     <section className="relative py-36 overflow-hidden">
-      {/* Background with overlay */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-fixed"
+      {/* Background with overlay — bg-fixed removed: unsupported on iOS Safari */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: 'url("/images/about.webp"), linear-gradient(to bottom, #0b0d0d, #174e4d)' }}
       >
         <div className="absolute inset-0 bg-black/80" />

@@ -85,17 +85,26 @@ export function Contact() {
             </div>
           </ScrollReveal>
 
-          {/* Map Placeholder */}
+          {/* Map Embed */}
           <ScrollReveal direction="right">
             <div className="glass-elevated rounded-2xl min-h-[400px] flex flex-col items-center justify-center relative p-8 text-center group overflow-hidden">
-              {/* Styled background */}
-              <div className="absolute inset-0 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Vesterbrogade+171,+1800+Frederiksberg&zoom=15&size=800x800&sensor=false&style=feature:all|element:labels.text.fill|color:0xffffff&style=feature:all|element:labels.text.stroke|visibility:on|color:0x000000|weight:2&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:geometry|color:0x171a1a&style=feature:poi|element:geometry|color:0x292c2c&style=feature:road|element:geometry.fill|color:0x353333&style=feature:road|element:geometry.stroke|color:0x0b0d0d&style=feature:transit|element:geometry|color:0x174e4d&style=feature:water|element:geometry|color:0x0b0d0d')] bg-cover bg-center opacity-20 grayscale rounded-2xl"></div>
-              
-              <MapPin className="w-14 h-14 text-[var(--color-brand)] mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500" />
+              {/* Free Google Maps embed — no API key required */}
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.9!2d12.5406!3d55.6689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4652530b97f2fd59%3A0x5b66d7c41fcf36f7!2sVesterbrogade%20171%2C%201800%20Frederiksberg%2C%20Denmark!5e0!3m2!1sda!2sdk!4v1692000000000!5m2!1sda!2sdk"
+                className="absolute inset-0 w-full h-full rounded-2xl grayscale opacity-30 transition-opacity duration-500 group-hover:opacity-45"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="FRISØR KBH lokation på kort"
+                aria-label="Google Maps kort der viser FRISØR KBH på Vesterbrogade 171, Frederiksberg"
+              />
+              {/* Dark overlay for contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-2xl pointer-events-none" />
+
+              <MapPin className="w-14 h-14 text-[var(--color-brand)] mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" />
               <h3 className="text-2xl text-white font-heading mb-6 relative z-10">Find Os</h3>
-              <Button 
-                href={siteConfig.contact.directionsUrl} 
-                variant="primary" 
+              <Button
+                href={siteConfig.contact.directionsUrl}
+                variant="primary"
                 className="relative z-10"
               >
                 Åbn Google Maps

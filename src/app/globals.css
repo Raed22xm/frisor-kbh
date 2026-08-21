@@ -118,6 +118,11 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.12);
   }
+
+  /* REC-17: Promote animated blob elements to GPU compositor layer */
+  .animate-blob {
+    will-change: transform;
+  }
 }
 
 /* ========================================
@@ -280,5 +285,19 @@
   [data-reveal-stagger] > * {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* ========================================
+   REC-20: Noscript / JS-disabled fallback
+   Ensures reveal elements are visible when JavaScript is disabled
+   (ScrollReveal relies on JS to add .revealed class)
+   ======================================== */
+@media (scripting: none) {
+  [data-reveal],
+  [data-reveal-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }

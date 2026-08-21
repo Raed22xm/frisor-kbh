@@ -1,4 +1,6 @@
 import BookingWizard from "@/components/booking/BookingWizard";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
   title: "Bestil tid hos FRISØR KBH | Herrefrisør i København",
@@ -8,8 +10,19 @@ export const metadata = {
 
 export default function BookingPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-gray-50 px-4 py-16 sm:px-6 md:px-8 pt-32">
+    <main
+      id="main-content"
+      className="min-h-screen bg-[var(--color-background)] px-4 py-10 sm:px-6 md:px-8 pt-28"
+    >
       <div className="mx-auto max-w-[1180px]">
+        {/* Breadcrumb back link */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-brand-light)] text-sm uppercase tracking-wider font-medium transition-colors mb-8 group"
+        >
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 duration-200" />
+          Tilbage til forsiden
+        </Link>
         <BookingWizard />
       </div>
     </main>
