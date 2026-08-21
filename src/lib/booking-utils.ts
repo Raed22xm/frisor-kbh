@@ -7,7 +7,8 @@ export function isValidPhone(phone: string) {
 }
 
 export function formatDateLabel(dateString: string) {
-  const date = new Date(dateString);
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
   return new Intl.DateTimeFormat("da-DK", {
     weekday: "long",
     day: "numeric",

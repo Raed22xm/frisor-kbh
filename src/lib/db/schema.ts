@@ -50,6 +50,7 @@ export const treatments = pgTable("treatments", {
   name: text("name").notNull(),
   durationMinutes: integer("duration_minutes").notNull(),
   price: text("price").notNull(),
+  image: text("image"),
   active: boolean("active").notNull().default(true),
 });
 

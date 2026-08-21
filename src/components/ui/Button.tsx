@@ -29,11 +29,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] disabled:opacity-50 disabled:pointer-events-none uppercase tracking-wider transition-all duration-200 ease-out active:scale-[0.97]";
+    "inline-flex touch-manipulation items-center justify-center font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] disabled:opacity-50 disabled:pointer-events-none uppercase tracking-wider transition-[color,background-color,border-color,box-shadow,transform,filter,opacity] duration-200 ease-out active:scale-[0.97]";
 
   const variants = {
     primary:
-      "bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-light)] text-white border border-[var(--color-brand)] hover:shadow-[0_0_30px_var(--color-brand-glow)] hover:scale-[1.02] hover:border-[var(--color-brand-light)]",
+      "bg-gradient-to-r from-[var(--color-brand-dark)] to-[var(--color-brand)] text-white border border-[var(--color-brand)] hover:brightness-110 hover:shadow-[0_0_30px_var(--color-brand-glow)] hover:scale-[1.02] hover:border-[var(--color-brand-light)]",
     secondary:
       "bg-[var(--color-surface-light)] text-white hover:bg-[var(--color-charcoal)] border border-white/[0.08] hover:border-white/[0.15] hover:shadow-[var(--shadow-md)]",
     outline:

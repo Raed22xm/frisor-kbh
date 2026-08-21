@@ -1,36 +1,46 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { galleryItems } from "@/data/site";
-import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Gallery() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const galleryContentRef = useRef<HTMLDivElement>(null);
+  const lastTriggerRef = useRef<HTMLButtonElement>(null);
 
   const isOpen = lightboxIndex !== null;
   const total = galleryItems.length;
+  const currentItem = lightboxIndex !== null ? galleryItems[lightboxIndex] : null;
 
-  // ---------------------------------------------------------------------------
-  // Keyboard navigation for lightbox
-  // ---------------------------------------------------------------------------
+  const closeLightbox = useCallback(() => {
+    setLightboxIndex(null);
+    requestAnimationFrame(() => lastTriggerRef.current?.focus());
+  }, []);
+
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+    (event: KeyboardEvent) => {
       if (!isOpen) return;
-      if (e.key === "Escape") setLightboxIndex(null);
-      if (e.key === "ArrowRight")
-        setLightboxIndex((prev) => (prev !== null ? (prev + 1) % total : 0));
-      if (e.key === "ArrowLeft")
-        setLightboxIndex((prev) =>
-          prev !== null ? (prev - 1 + total) % total : total - 1
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowRight") {
+        setLightboxIndex((previous) =>
+          previous !== null ? (previous + 1) % total : 0
         );
+      }
+      if (event.key === "ArrowLeft") {
+        setLightboxIndex((previous) =>
+          previous !== null ? (previous - 1 + total) % total : total - 1
+        );
+      }
     },
-    [isOpen, total]
+    [closeLightbox, isOpen, total]
   );
 
   useEffect(() => {
@@ -38,133 +48,162 @@ export function Gallery() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Prevent body scroll when lightbox is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    const galleryContent = galleryContentRef.current;
+    if (galleryContent) {
+      galleryContent.inert = isOpen;
+      if (isOpen) galleryContent.setAttribute("aria-hidden", "true");
+      else galleryContent.removeAttribute("aria-hidden");
+    }
+
+    if (!isOpen || !dialogRef.current) {
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+
+    const dialog = dialogRef.current;
+    const focusableElements = Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      )
+    );
+    focusableElements[0]?.focus();
+
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== "Tab" || focusableElements.length === 0) return;
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    dialog.addEventListener("keydown", trapFocus);
+    return () => {
+      dialog.removeEventListener("keydown", trapFocus);
+      document.body.style.overflow = "";
+      if (galleryContent) {
+        galleryContent.inert = false;
+        galleryContent.removeAttribute("aria-hidden");
+      }
+    };
   }, [isOpen]);
 
-  const currentItem =
-    lightboxIndex !== null ? galleryItems[lightboxIndex] : null;
-
   return (
-    <section id="gallery" className="py-28 bg-[var(--color-background)]">
-      <Container>
-        <ScrollReveal>
-          <SectionHeading
-            subtitle="Vores Arbejde"
-            title="Galleri"
-            centered
-          />
-        </ScrollReveal>
+    <section id="gallery" className="bg-[var(--color-background)] py-20 md:py-28">
+      <div ref={galleryContentRef}>
+        <Container>
+          <ScrollReveal>
+            <SectionHeading subtitle="Vores arbejde" title="Galleri" centered />
+          </ScrollReveal>
 
-        <ScrollReveal
-          stagger
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-12"
-        >
-          {galleryItems.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setLightboxIndex(index)}
-              aria-label={`Vis stort: ${item.alt}`}
-              className={cn(
-                "group relative aspect-square overflow-hidden rounded-xl border border-white/[0.06]",
-                "bg-[var(--color-surface)] cursor-pointer transition-all duration-300",
-                "hover:border-white/[0.18] hover:shadow-[var(--shadow-lg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
-              )}
-            >
-              {/* Image — graceful fallback if file doesn't exist yet */}
-              {!imgErrors[item.id] ? (
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  onError={() =>
-                    setImgErrors((prev) => ({ ...prev, [item.id]: true }))
-                  }
-                />
-              ) : (
-                // Placeholder shown when image file isn't placed yet
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-[var(--color-text-muted)] opacity-25 gap-2 p-4">
-                  <ZoomIn className="w-8 h-8" />
-                  <span className="text-xs text-center">{item.alt}</span>
-                  <span className="text-[10px] opacity-60">{item.src}</span>
+          <ScrollReveal
+            stagger
+            className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-6 lg:grid-cols-3"
+          >
+            {galleryItems.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={(event) => {
+                  lastTriggerRef.current = event.currentTarget;
+                  setLightboxIndex(index);
+                }}
+                aria-label={`Vis stort: ${item.alt}`}
+                className={cn(
+                  "group relative aspect-square cursor-pointer overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--color-surface)]",
+                  "transition-[transform,border-color,box-shadow] duration-300 hover:border-white/[0.2] hover:shadow-[var(--shadow-lg)]",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)]"
+                )}
+              >
+                {!imgErrors[item.id] ? (
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    onError={() =>
+                      setImgErrors((previous) => ({ ...previous, [item.id]: true }))
+                    }
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-[var(--color-text-muted)] opacity-40">
+                    <ZoomIn className="h-8 w-8" aria-hidden="true" />
+                    <span className="text-center text-xs">{item.alt}</span>
+                  </div>
+                )}
+
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <span className="flex items-center gap-2 rounded-lg border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-medium uppercase tracking-widest text-white">
+                    <ZoomIn className="h-4 w-4" aria-hidden="true" />
+                    Vis stort
+                  </span>
                 </div>
-              )}
+              </button>
+            ))}
+          </ScrollReveal>
+        </Container>
+      </div>
 
-              {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center rounded-xl">
-                <span className="flex items-center gap-2 text-white border border-white/30 px-5 py-2.5 text-sm uppercase tracking-widest font-medium rounded-lg opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-75 bg-white/5 backdrop-blur-sm">
-                  <ZoomIn className="w-4 h-4" />
-                  Vis stort
-                </span>
-              </div>
-            </button>
-          ))}
-        </ScrollReveal>
-      </Container>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Lightbox — native <dialog>-style overlay                            */}
-      {/* ------------------------------------------------------------------ */}
-      {isOpen && currentItem && (
+      {isOpen && currentItem ? (
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={`Galleri: ${currentItem.alt}`}
-          className="fixed inset-0 z-[100] flex items-center justify-center"
-          onClick={() => setLightboxIndex(null)}
+          className="fixed inset-0 z-[100] flex items-center justify-center overscroll-contain"
+          onClick={closeLightbox}
+          tabIndex={-1}
         >
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-md" aria-hidden="true" />
 
-          {/* Close button */}
           <button
             type="button"
-            onClick={() => setLightboxIndex(null)}
+            onClick={closeLightbox}
             aria-label="Luk galleri"
-            className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full glass-card flex items-center justify-center text-white hover:text-[var(--color-brand-light)] hover:shadow-[0_0_20px_var(--color-brand-glow)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="glass-card absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition-[color,box-shadow] hover:text-[var(--color-brand-light)] hover:shadow-[0_0_20px_var(--color-brand-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)]"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
 
-          {/* Prev button */}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightboxIndex((prev) =>
-                prev !== null ? (prev - 1 + total) % total : total - 1
+            onClick={(event) => {
+              event.stopPropagation();
+              setLightboxIndex((previous) =>
+                previous !== null ? (previous - 1 + total) % total : total - 1
               );
             }}
             aria-label="Forrige billede"
-            className="absolute left-4 z-10 w-11 h-11 rounded-full glass-card flex items-center justify-center text-white hover:text-[var(--color-brand-light)] hover:shadow-[0_0_20px_var(--color-brand-glow)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="glass-card absolute left-2 z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition-[color,box-shadow] hover:text-[var(--color-brand-light)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)] sm:left-4"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
           </button>
 
-          {/* Next button */}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightboxIndex((prev) =>
-                prev !== null ? (prev + 1) % total : 0
+            onClick={(event) => {
+              event.stopPropagation();
+              setLightboxIndex((previous) =>
+                previous !== null ? (previous + 1) % total : 0
               );
             }}
             aria-label="Næste billede"
-            className="absolute right-4 z-10 w-11 h-11 rounded-full glass-card flex items-center justify-center text-white hover:text-[var(--color-brand-light)] hover:shadow-[0_0_20px_var(--color-brand-glow)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]"
+            className="glass-card absolute right-2 z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition-[color,box-shadow] hover:text-[var(--color-brand-light)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)] sm:right-4"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="h-5 w-5" aria-hidden="true" />
           </button>
 
-          {/* Image container */}
           <div
-            className="relative z-10 max-w-4xl max-h-[85vh] w-full mx-16 rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-            onClick={(e) => e.stopPropagation()}
+            className="relative z-10 mx-12 max-h-[82vh] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl sm:mx-16"
+            onClick={(event) => event.stopPropagation()}
           >
             <div className="relative aspect-square md:aspect-video">
               {!imgErrors[currentItem.id] ? (
@@ -177,45 +216,52 @@ export function Gallery() {
                   priority
                 />
               ) : (
-                <div className="absolute inset-0 bg-[var(--color-surface)] flex flex-col items-center justify-center gap-3 text-[var(--color-text-muted)]">
-                  <ZoomIn className="w-12 h-12 opacity-30" />
-                  <p className="text-sm opacity-50">{currentItem.alt}</p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[var(--color-surface)] text-[var(--color-text-muted)]">
+                  <ZoomIn className="h-12 w-12 opacity-40" aria-hidden="true" />
+                  <p className="text-sm">{currentItem.alt}</p>
                 </div>
               )}
             </div>
 
-            {/* Caption + counter */}
-            {currentItem.caption && (
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex justify-between items-end">
-                <p className="text-white font-medium text-lg">
+            {currentItem.caption ? (
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/90 to-transparent p-4 sm:p-6">
+                <p className="text-base font-medium text-white sm:text-lg">
                   {currentItem.caption}
                 </p>
-                <span className="text-white/50 text-sm tabular-nums">
-                  {lightboxIndex! + 1} / {total}
+                <span className="text-sm tabular-nums text-white/70">
+                  {lightboxIndex + 1} / {total}
                 </span>
               </div>
-            )}
+            ) : null}
           </div>
 
-          {/* Dot indicators */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-            {galleryItems.map((_, i) => (
+          <div className="absolute bottom-[calc(.5rem+env(safe-area-inset-bottom))] left-1/2 z-20 flex -translate-x-1/2">
+            {galleryItems.map((_, index) => (
               <button
-                key={i}
+                key={index}
                 type="button"
-                onClick={(e) => { e.stopPropagation(); setLightboxIndex(i); }}
-                aria-label={`Gå til billede ${i + 1}`}
-                className={cn(
-                  "w-2 h-2 rounded-full transition-all duration-200",
-                  i === lightboxIndex
-                    ? "bg-[var(--color-brand-light)] w-5"
-                    : "bg-white/30 hover:bg-white/60"
-                )}
-              />
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setLightboxIndex(index);
+                }}
+                aria-label={`Gå til billede ${index + 1}`}
+                aria-current={index === lightboxIndex ? "true" : undefined}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full"
+              >
+                <span
+                  className={cn(
+                    "h-2 rounded-full transition-[width,background-color] duration-200",
+                    index === lightboxIndex
+                      ? "w-5 bg-[var(--color-brand-light)]"
+                      : "w-2 bg-white/50"
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
             ))}
           </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { navigation, siteConfig } from "@/data/site";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,20 +26,30 @@ export function Header() {
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    const backgroundElements = Array.from(
+      document.querySelectorAll<HTMLElement>("main, footer, #floating-booking-button")
+    );
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
+    backgroundElements.forEach((element) => {
+      element.inert = isMobileMenuOpen;
+    });
     return () => {
       document.body.style.overflow = "";
+      backgroundElements.forEach((element) => {
+        element.inert = false;
+      });
     };
   }, [isMobileMenuOpen]);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+    requestAnimationFrame(() => menuButtonRef.current?.focus());
+  }, []);
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed left-0 right-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,padding,box-shadow,border-color] duration-300",
         isScrolled
           ? "glass-elevated py-2 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
           : "bg-black/20 backdrop-blur-sm py-2"
@@ -56,11 +67,11 @@ export function Header() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Logo width={84} height={88} className={cn("transition-transform duration-300", isScrolled && "scale-[0.92]")} />
+            <Logo width={72} height={76} className={cn("transition-transform duration-300", isScrolled && "scale-[0.94]")} />
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav aria-label="Hovednavigation" className="hidden space-x-8 md:flex">
             {navigation.map((item) => (
               <a
                 key={item.label}
@@ -82,17 +93,19 @@ export function Header() {
               size="sm"
               className="shadow-[0_0_20px_var(--color-brand-glow)]"
             >
-              Book Tid
+              Book tid
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
+              ref={menuButtonRef}
               type="button"
-              className="relative text-white hover:text-[var(--color-brand-light)] p-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)] rounded-lg cursor-pointer"
+              className="relative min-h-11 min-w-11 cursor-pointer rounded-lg p-2 text-white transition-[color,background-color] duration-200 hover:bg-white/5 hover:text-[var(--color-brand-light)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)]"
               aria-controls="mobile-menu"
               aria-expanded={isMobileMenuOpen}
+              aria-label={isMobileMenuOpen ? "Luk menu" : "Åbn menu"}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <span className="sr-only">
@@ -101,14 +114,14 @@ export function Header() {
               <div className="relative w-7 h-7">
                 <Menu
                   className={cn(
-                    "absolute inset-0 h-7 w-7 transition-all duration-300",
+                    "absolute inset-0 h-7 w-7 transition-[opacity,transform] duration-300",
                     isMobileMenuOpen ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"
                   )}
                   aria-hidden="true"
                 />
                 <X
                   className={cn(
-                    "absolute inset-0 h-7 w-7 transition-all duration-300",
+                    "absolute inset-0 h-7 w-7 transition-[opacity,transform] duration-300",
                     isMobileMenuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"
                   )}
                   aria-hidden="true"
@@ -122,7 +135,7 @@ export function Header() {
       {/* Mobile Navigation Modal */}
       <MobileNavigation
         isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
+        onClose={closeMobileMenu}
       />
     </header>
   );

@@ -31,7 +31,7 @@ export function AdminSidebar() {
   return (
     <div className="flex h-full w-64 flex-col border-r border-gray-200 bg-white">
       <div className="flex h-16 items-center border-b border-gray-200 px-6">
-        <span className="text-xl font-bold tracking-tight text-gray-900">Ahmad Frisøer</span>
+        <span className="text-xl font-bold tracking-tight text-gray-900">FRISØR KBH</span>
       </div>
       
       <nav className="flex-1 space-y-1 px-3 py-4">

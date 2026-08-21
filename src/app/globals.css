@@ -21,6 +21,7 @@
 
 @layer base {
   :root {
+    color-scheme: dark;
     --color-background: #0b0d0d;
     --color-surface: #131616;
     --color-surface-light: #1e2222;
@@ -49,12 +50,32 @@
     scroll-behavior: smooth;
   }
 
+  html {
+    overflow-x: clip;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-text);
     font-family: var(--font-body), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  a, button, input, textarea, select {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(85, 160, 157, 0.18);
+  }
+
+  section[id],
+  :target {
+    scroll-margin-top: 100px;
+  }
+
+  :focus {
+    scroll-margin-top: 110px;
+    scroll-margin-bottom: 72px;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -72,7 +93,7 @@
 
   /* Accessible focus ring */
   :focus-visible {
-    outline: 2px solid var(--color-brand);
+    outline: 2px solid var(--color-brand-light);
     outline-offset: 2px;
     border-radius: 4px;
   }

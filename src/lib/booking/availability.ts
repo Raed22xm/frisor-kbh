@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { bookings } from "@/lib/db/schema";
+import type { PgTransaction } from "drizzle-orm/pg-core";
 import { getTreatmentById, getEmployeeById } from "./catalog";
 import { BookingError } from "./errors";
 import {
@@ -21,9 +23,9 @@ type BookedInterval = {
 async function getEmployeeBookedIntervals(
   date: string,
   employeeId: string,
-  tx?: any
+  tx?: PgTransaction<any, any, any>
 ): Promise<BookedInterval[]> {
-  const db = tx || getDb();
+  const db = tx ?? getDb();
   const rows = await db
     .select({
       time: bookings.time,
@@ -115,7 +117,7 @@ export async function assertSlotAvailable(
     employeeId: string;
     durationMinutes: number;
   },
-  tx?: any
+  tx?: PgTransaction<any, any, any>
 ) {
   if (!isValidDateKey(params.date) || isPastBookingDate(params.date)) {
     throw new BookingError(

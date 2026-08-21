@@ -12,9 +12,9 @@ function kr(amount: number): string {
 // ---------------------------------------------------------------------------
 export const siteConfig: SiteConfig = {
   businessName: "FRISØR KBH",
-  tagline: "Med og uden tidsbestilling",
+  tagline: "Online booking, drop-in og skarp herreklip på Frederiksberg",
   description:
-    "Professionel herrefrisør i København med fokus på klipning, fades og skægpleje.",
+    "FRISØR KBH er en lokal herrefrisør på Vesterbrogade med fokus på herreklip, skin fade og skægtrimning i en rolig og professionel salon.",
   // REC-13: reads from environment so staging/production use the correct domain
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://frisor-kbh.dk",
   contact: {
@@ -34,9 +34,9 @@ export const siteConfig: SiteConfig = {
     facebook: "",
   },
   seo: {
-    defaultTitle: "FRISØR KBH | Herrefrisør i København",
+    defaultTitle: "FRISØR KBH | Herrefrisør på Frederiksberg",
     defaultDescription:
-      "FRISØR KBH tilbyder professionelle herreklipninger, fades og skægpleje på Vesterbrogade 171, 1800 Frederiksberg. Book din tid online eller kom forbi salonen.",
+      "Book tid hos FRISØR KBH på Vesterbrogade 171. Herreklip, skin fade og skægtrimning med online booking, drop-in og tydelige priser.",
   },
 };
 
@@ -44,11 +44,11 @@ export const siteConfig: SiteConfig = {
 // Navigation
 // ---------------------------------------------------------------------------
 export const navigation: NavigationItem[] = [
-  { label: "Forside", href: "#hero" },
-  { label: "Om os", href: "#about" },
-  { label: "Priser", href: "#services" },
-  { label: "Galleri", href: "#gallery" },
-  { label: "Kontakt", href: "#contact" },
+  { label: "Forside", href: "/#hero" },
+  { label: "Om os", href: "/#about" },
+  { label: "Priser", href: "/#services" },
+  { label: "Galleri", href: "/#gallery" },
+  { label: "Kontakt", href: "/#contact" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -58,8 +58,8 @@ export const services: ServiceItem[] = [
   {
     id: "herreklip",
     name: "Herreklip",
-    price: 200,
-    description: "Klassisk klipning med saks og maskine. Inkl. vask og styling.",
+    price: 240,
+    description: "Klassisk herreklip med saks og maskine, afsluttet med styling.",
     duration: "30 min",
     durationMinutes: 30,
     featured: true,
@@ -67,20 +67,10 @@ export const services: ServiceItem[] = [
     imageAlt: "Kunde med færdig klassisk herreklip",
   },
   {
-    id: "skaeg",
-    name: "Skæg",
-    price: 125,
-    description: "Trimning og retning af skæg.",
-    duration: "15 min",
-    durationMinutes: 15,
-    image: "/images/services/skaegtrimning-customer.webp",
-    imageAlt: "Kunde med færdigtrimmet og formet fuldskæg",
-  },
-  {
-    id: "haar-og-skaeg",
-    name: "Hår og skæg",
-    price: 300,
-    description: "Herreklip inkl. retning af skæg og varme håndklæder.",
+    id: "herreklip-skaeg",
+    name: "Herreklip og skæg",
+    price: 320,
+    description: "Komplet behandling med klipning, skægtrimning og skarpe kanter.",
     duration: "45 min",
     durationMinutes: 45,
     featured: true,
@@ -88,41 +78,34 @@ export const services: ServiceItem[] = [
     imageAlt: "Kunde med frisk herreklip og formet skæg",
   },
   {
-    id: "pensionist",
-    name: "Pensionist",
-    price: 180,
+    id: "pensionistklip",
+    name: "Pensionistklip",
+    price: 150,
+    description: "Rolig og grundig klipning til pensionister med fokus på et pænt, naturligt resultat.",
     duration: "30 min",
     durationMinutes: 30,
     image: "/images/services/pensionistklip-customer.webp",
     imageAlt: "Ældre kunde med færdig klassisk klipning og sølvgråt hår",
   },
   {
-    id: "pensionist-saks",
-    name: "Pensionist (med saks)",
-    price: 200,
-    duration: "30 min",
-    durationMinutes: 30,
+    id: "skin-fade",
+    name: "Skin fade",
+    price: 280,
+    description: "Præcis fade med rene overgange og moderne finish.",
+    duration: "45 min",
+    durationMinutes: 45,
+    image: "/images/services/skin-fade-customer.webp",
+    imageAlt: "Kunde med færdig skin fade",
   },
   {
-    id: "maskineklip",
-    name: "Maskineklip",
+    id: "skaegtrimning",
+    name: "Skægtrimning",
     price: 100,
+    description: "Trimning og formning af skæg, så linjerne står skarpt.",
     duration: "15 min",
     durationMinutes: 15,
-  },
-  {
-    id: "boerneklip",
-    name: "Børneklip (u. 10 år)",
-    price: 180,
-    duration: "30 min",
-    durationMinutes: 30,
-  },
-  {
-    id: "haarfjerning-voks-traad",
-    name: "Hårfjerning med voks og tråd",
-    price: 50,
-    duration: "15 min",
-    durationMinutes: 15,
+    image: "/images/services/skaegtrimning-customer.webp",
+    imageAlt: "Kunde med færdigtrimmet og formet fuldskæg",
   },
 ];
 
@@ -131,8 +114,8 @@ export const services: ServiceItem[] = [
 // ---------------------------------------------------------------------------
 export const benefits: BenefitItem[] = [
   {
-    title: "Erfarne frisører",
-    description: "Vi har mange års erfaring inden for herreklip og grooming.",
+    title: "Professionel betjening",
+    description: "Du bliver mødt i en rolig salon med fokus på detaljerne.",
     iconName: "Scissors",
   },
   {
@@ -146,8 +129,8 @@ export const benefits: BenefitItem[] = [
     iconName: "Coffee",
   },
   {
-    title: "Nem online booking",
-    description: "Book din tid når det passer dig, eller kom ind fra gaden.",
+    title: "Booking og drop-in",
+    description: "Book online på få minutter, ring til os, eller kom forbi når der er plads.",
     iconName: "Calendar",
   },
 ];

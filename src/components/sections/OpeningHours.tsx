@@ -6,14 +6,15 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { cn } from "@/lib/utils";
 
 export function OpeningHours() {
-  // Try to find the current day in Danish
-  const todayIndex = new Date().getDay();
-  // JS getDay(): 0 = Sunday, 1 = Monday, etc.
-  const days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
-  const currentDay = days[todayIndex];
+  const currentDayLabel = new Intl.DateTimeFormat("da-DK", {
+    weekday: "long",
+    timeZone: "Europe/Copenhagen",
+  }).format(new Date());
+  const currentDay =
+    currentDayLabel.charAt(0).toUpperCase() + currentDayLabel.slice(1);
 
   return (
-    <section className="py-28 bg-[var(--color-surface-light)] relative overflow-hidden">
+    <section className="relative overflow-hidden bg-[var(--color-surface-light)] py-20 md:py-28">
       {/* Top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 

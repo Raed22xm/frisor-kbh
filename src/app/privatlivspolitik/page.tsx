@@ -172,7 +172,7 @@ export default function PrivatlivspolitikPage() {
               <ul className="list-disc list-inside space-y-2 mt-4 ml-2">
                 <li>Ret til indsigt i dine personoplysninger</li>
                 <li>Ret til berigtigelse af urigtige oplysninger</li>
-                <li>Ret til sletning ("retten til at blive glemt")</li>
+                <li>Ret til sletning (&quot;retten til at blive glemt&quot;)</li>
                 <li>Ret til begrænsning af behandling</li>
                 <li>Ret til dataportabilitet</li>
                 <li>Ret til indsigelse mod behandling</li>

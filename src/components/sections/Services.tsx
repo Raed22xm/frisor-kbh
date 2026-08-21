@@ -7,14 +7,14 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function Services() {
   return (
-    <section id="services" className="py-28 bg-[var(--color-background)] relative overflow-hidden">
+    <section id="services" className="relative overflow-hidden bg-[var(--color-background)] py-20 md:py-28">
       {/* Subtle ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[var(--color-brand)]/[0.03] rounded-full blur-[150px] pointer-events-none" />
 
       <Container className="relative z-10">
         <ScrollReveal>
           <SectionHeading 
-            subtitle="Vores Priser" 
+              subtitle="Vores priser" 
             title="Klipning & Styling" 
             centered 
           />
@@ -29,8 +29,8 @@ export function Services() {
         <ScrollReveal delay={400}>
           <div className="mt-16 text-center max-w-2xl mx-auto">
             <p className="text-[var(--color-text-muted)] text-sm leading-relaxed">
-              Bemærk: Priserne er vejledende og kan variere afhængigt af opgavens omfang. 
-              Er du i tvivl, er du altid velkommen til at kontakte os eller spørge i salonen.
+              De viste priser gælder de beskrevne behandlinger. Har du særlige ønsker,
+              er du altid velkommen til at kontakte os inden din booking.
             </p>
           </div>
         </ScrollReveal>

@@ -9,6 +9,7 @@ type Treatment = {
   name: string;
   durationMinutes: number;
   price: string;
+  image?: string | null;
   active: boolean;
 };
 
@@ -41,6 +42,7 @@ export default function ServicesManager({
     categoryId: allCategories[0]?.id || "",
     durationMinutes: 30,
     price: "",
+    image: "",
   });
 
   const handleAddTreatment = async (e: React.FormEvent) => {
@@ -57,7 +59,7 @@ export default function ServicesManager({
     
     setIsSubmitting(false);
     setIsModalOpen(false);
-    setFormData({ ...formData, name: "", price: "" }); // Reset form
+    setFormData({ ...formData, name: "", price: "", image: "" }); // Reset form
   };
 
   const handleToggle = async (id: string, currentStatus: boolean) => {
@@ -172,6 +174,17 @@ export default function ServicesManager({
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                   placeholder="f.eks. Herreklip"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Billede (URL)</label>
+                <input
+                  type="text"
+                  value={formData.image}
+                  onChange={(e) => setFormData({...formData, image: e.target.value})}
+                  className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  placeholder="f.eks. /images/services/maskineklip-customer.jpg"
                 />
               </div>
 

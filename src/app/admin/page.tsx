@@ -10,7 +10,7 @@ export default function AdminDashboardPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">Dashboard</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Overview of today's business and upcoming appointments.
+          Overview of today&apos;s business and upcoming appointments.
         </p>
       </div>
 

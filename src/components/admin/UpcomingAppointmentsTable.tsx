@@ -9,7 +9,7 @@ export function UpcomingAppointmentsTable() {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="px-6 py-5 border-b border-gray-200">
-        <h3 className="text-base font-semibold leading-6 text-gray-900">Today's Appointments</h3>
+        <h3 className="text-base font-semibold leading-6 text-gray-900">Today&apos;s Appointments</h3>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">

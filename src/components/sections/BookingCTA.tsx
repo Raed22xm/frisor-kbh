@@ -6,7 +6,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function BookingCTA() {
   return (
-    <section className="relative py-36 overflow-hidden">
+    <section className="relative overflow-hidden py-24 md:py-36">
       {/* Background with overlay — bg-fixed removed: unsupported on iOS Safari */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center"
@@ -57,12 +57,12 @@ export function BookingCTA() {
           <Button 
             href={siteConfig.contact.bookingUrl} 
             size="lg" 
-            className="text-lg px-14 py-7 shadow-[0_0_40px_var(--color-brand-glow)] hover:shadow-[0_0_60px_rgba(85,160,157,0.35)] hover:scale-105 transition-all duration-300"
+            className="px-14 py-7 text-lg shadow-[0_0_40px_var(--color-brand-glow)] transition-[transform,box-shadow] duration-300 hover:scale-105 hover:shadow-[0_0_60px_rgba(85,160,157,0.35)]"
             style={{
               animation: "pulseGlow 3s ease-in-out infinite",
             }}
           >
-            Book Tid Nu
+            Book tid
           </Button>
         </ScrollReveal>
       </Container>

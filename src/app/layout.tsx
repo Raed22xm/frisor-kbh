@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { siteConfig, openingHours } from "@/data/site";
@@ -47,6 +47,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0b0d0d",
+  colorScheme: "dark",
 };
 
 // ---------------------------------------------------------------------------

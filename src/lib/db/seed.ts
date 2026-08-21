@@ -73,7 +73,7 @@ async function seed() {
   await db
     .insert(employees)
     .values([
-      { id: "ahmad", name: "Ahmad" },
+      { id: "frisor-kbh", name: "FRISØR KBH" },
     ])
     .onConflictDoNothing();
 

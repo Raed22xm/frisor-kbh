@@ -27,7 +27,7 @@ export default function GalleryUploader() {
       const filePath = `uploads/${fileName}`;
 
       // 2. Upload to Supabase Storage
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('gallery')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -52,8 +52,8 @@ export default function GalleryUploader() {
 
       // Clear the input
       e.target.value = '';
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setIsUploading(false);
     }

@@ -8,12 +8,12 @@ import { MapPin, Phone, Mail } from "lucide-react";
 
 export function Contact() {
   return (
-    <section id="contact" className="py-28 bg-[var(--color-background)]">
+    <section id="contact" className="bg-[var(--color-background)] py-20 md:py-28">
       <Container>
         <ScrollReveal>
           <SectionHeading 
             subtitle="Find os" 
-            title="Kontakt & Lokation" 
+            title="Kontakt & lokation" 
           />
         </ScrollReveal>
         
@@ -27,10 +27,29 @@ export function Contact() {
                 Vesterbrogade 171, 1800 Frederiksberg.
               </p>
 
+              <div className="mb-10 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`}
+                  variant="primary"
+                  className="gap-2"
+                >
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  Ring nu
+                </Button>
+                <Button
+                  href={siteConfig.contact.directionsUrl}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <MapPin className="h-4 w-4" aria-hidden="true" />
+                  Få rutevejledning
+                </Button>
+              </div>
+
               <div className="space-y-8">
                 <div className="flex items-start group">
-                  <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mr-6 flex-shrink-0 group-hover:shadow-[0_0_20px_var(--color-brand-glow)] group-hover:border-[var(--color-brand)]/30 transition-all duration-300">
-                    <MapPin className="w-5 h-5 text-[var(--color-brand)]" />
+                  <div className="mr-6 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl glass-card transition-[border-color,box-shadow] duration-300 group-hover:border-[var(--color-brand)]/30 group-hover:shadow-[0_0_20px_var(--color-brand-glow)]">
+                    <MapPin className="w-5 h-5 text-[var(--color-brand-light)]" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="text-white font-heading text-lg mb-2 uppercase tracking-wide">Adresse</h3>
@@ -53,8 +72,8 @@ export function Contact() {
                 </div>
 
                 <div className="flex items-start group">
-                  <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mr-6 flex-shrink-0 group-hover:shadow-[0_0_20px_var(--color-brand-glow)] group-hover:border-[var(--color-brand)]/30 transition-all duration-300">
-                    <Phone className="w-5 h-5 text-[var(--color-brand)]" />
+                  <div className="mr-6 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl glass-card transition-[border-color,box-shadow] duration-300 group-hover:border-[var(--color-brand)]/30 group-hover:shadow-[0_0_20px_var(--color-brand-glow)]">
+                    <Phone className="w-5 h-5 text-[var(--color-brand-light)]" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="text-white font-heading text-lg mb-2 uppercase tracking-wide">Telefon</h3>
@@ -68,11 +87,11 @@ export function Contact() {
                 </div>
 
                 <div className="flex items-start group">
-                  <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mr-6 flex-shrink-0 group-hover:shadow-[0_0_20px_var(--color-brand-glow)] group-hover:border-[var(--color-brand)]/30 transition-all duration-300">
-                    <Mail className="w-5 h-5 text-[var(--color-brand)]" />
+                  <div className="mr-6 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl glass-card transition-[border-color,box-shadow] duration-300 group-hover:border-[var(--color-brand)]/30 group-hover:shadow-[0_0_20px_var(--color-brand-glow)]">
+                    <Mail className="w-5 h-5 text-[var(--color-brand-light)]" aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="text-white font-heading text-lg mb-2 uppercase tracking-wide">Email</h3>
+                    <h3 className="text-white font-heading text-lg mb-2 uppercase tracking-wide">E-mail</h3>
                     <a 
                       href={`mailto:${siteConfig.contact.email}`} 
                       className="text-[var(--color-text-muted)] hover:text-[var(--color-brand-light)] transition-colors"
@@ -100,8 +119,8 @@ export function Contact() {
               {/* Dark overlay for contrast */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-2xl pointer-events-none" />
 
-              <MapPin className="w-14 h-14 text-[var(--color-brand)] mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" />
-              <h3 className="text-2xl text-white font-heading mb-6 relative z-10">Find Os</h3>
+              <MapPin className="w-14 h-14 text-[var(--color-brand-light)] mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" aria-hidden="true" />
+              <h3 className="text-2xl text-white font-heading mb-6 relative z-10">Find os</h3>
               <Button
                 href={siteConfig.contact.directionsUrl}
                 variant="primary"

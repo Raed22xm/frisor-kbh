@@ -17,7 +17,7 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
   return (
     <div
       className={cn(
-        "group relative flex flex-col p-7 rounded-xl glass-card transition-all duration-300 h-full",
+        "group relative flex h-full flex-col rounded-xl p-7 glass-card transition-[transform,border-color,box-shadow] duration-300",
         "hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)]",
         featured
           ? "border-[var(--color-brand)]/40 hover:border-[var(--color-brand)]/70 hover:shadow-[0_8px_40px_var(--color-brand-glow)]"
@@ -62,7 +62,7 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-auto pt-6 border-t border-white/[0.06]">
         {duration ? (
           <div className="flex items-center text-[var(--color-text-muted)] text-sm">
-            <Clock className="w-4 h-4 mr-2 text-[var(--color-brand)]/60" />
+            <Clock className="w-4 h-4 mr-2 text-[var(--color-brand-light)]" aria-hidden="true" />
             {duration}
           </div>
         ) : (
@@ -70,12 +70,12 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
         )}
         
         <Button 
-          href={service.bookingUrl || siteConfig.contact.bookingUrl}
+          href={service.bookingUrl || `${siteConfig.contact.bookingUrl}?service=${encodeURIComponent(service.id)}`}
           variant={featured ? "primary" : "outline"}
           size="sm"
           className="w-full sm:w-auto"
         >
-          Book Tid
+          Book tid
         </Button>
       </div>
     </div>

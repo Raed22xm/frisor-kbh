@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import BookingWizard from "@/components/booking/BookingWizard";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -12,18 +13,20 @@ export default function BookingPage() {
   return (
     <main
       id="main-content"
-      className="min-h-screen bg-[var(--color-background)] px-4 py-10 sm:px-6 md:px-8 pt-28"
+      className="min-h-screen bg-[var(--color-background)] px-4 pb-16 pt-[calc(7rem+env(safe-area-inset-top))] sm:px-6 md:px-8 md:pb-20 md:pt-[calc(8rem+env(safe-area-inset-top))]"
     >
       <div className="mx-auto max-w-[1180px]">
         {/* Breadcrumb back link */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-brand-light)] text-sm uppercase tracking-wider font-medium transition-colors mb-8 group"
+          className="group mb-7 inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-medium uppercase tracking-wider text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-brand-light)]"
         >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 duration-200" />
+          <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true" />
           Tilbage til forsiden
         </Link>
-        <BookingWizard />
+        <Suspense fallback={<div className="rounded-[28px] border border-gray-200 bg-white p-8 text-center text-gray-700 shadow-lg" aria-live="polite">Henter booking…</div>}>
+          <BookingWizard />
+        </Suspense>
       </div>
     </main>
   );

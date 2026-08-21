@@ -11,6 +11,7 @@ export async function addTreatment(data: {
   name: string;
   durationMinutes: number;
   price: string;
+  image?: string;
 }) {
   try {
     const db = getDb();
@@ -21,6 +22,7 @@ export async function addTreatment(data: {
       name: data.name,
       durationMinutes: data.durationMinutes,
       price: data.price,
+      image: data.image || null,
       active: true,
     });
     
@@ -28,9 +30,10 @@ export async function addTreatment(data: {
     revalidatePath("/booking");
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to add treatment:", error);
-    return { success: false, error: error.message || "Failed to add treatment" };
+    const message = error instanceof Error ? error.message : "Failed to add treatment";
+    return { success: false, error: message };
   }
 }
 
@@ -46,9 +49,10 @@ export async function toggleTreatmentStatus(id: string, currentStatus: boolean) 
     revalidatePath("/booking");
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to toggle treatment:", error);
-    return { success: false, error: error.message || "Failed to toggle treatment status" };
+    const message = error instanceof Error ? error.message : "Failed to toggle treatment status";
+    return { success: false, error: message };
   }
 }
 
@@ -62,8 +66,9 @@ export async function deleteTreatment(id: string) {
     revalidatePath("/booking");
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to delete treatment:", error);
-    return { success: false, error: error.message || "Failed to delete treatment" };
+    const message = error instanceof Error ? error.message : "Failed to delete treatment";
+    return { success: false, error: message };
   }
 }

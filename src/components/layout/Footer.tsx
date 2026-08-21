@@ -26,7 +26,7 @@ export function Footer() {
                   href={siteConfig.social.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group w-10 h-10 rounded-lg glass-card flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-brand-light)] hover:shadow-[0_0_16px_var(--color-brand-glow)] transition-all duration-300 hover:scale-110"
+                  className="group flex h-11 w-11 items-center justify-center rounded-lg glass-card text-[var(--color-text-muted)] transition-[color,box-shadow,transform] duration-300 hover:scale-110 hover:text-[var(--color-brand-light)] hover:shadow-[0_0_16px_var(--color-brand-glow)]"
                   aria-label="Instagram"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -39,7 +39,7 @@ export function Footer() {
                   href={siteConfig.social.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group w-10 h-10 rounded-lg glass-card flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-brand-light)] hover:shadow-[0_0_16px_var(--color-brand-glow)] transition-all duration-300 hover:scale-110"
+                  className="group flex h-11 w-11 items-center justify-center rounded-lg glass-card text-[var(--color-text-muted)] transition-[color,box-shadow,transform] duration-300 hover:scale-110 hover:text-[var(--color-brand-light)] hover:shadow-[0_0_16px_var(--color-brand-glow)]"
                   aria-label="Facebook"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -76,7 +76,7 @@ export function Footer() {
             </h3>
             <ul className="space-y-4">
               <li className="flex items-start text-[var(--color-text-muted)] text-sm">
-                <MapPin className="w-5 h-5 text-[var(--color-brand)] mr-3 flex-shrink-0 mt-0.5" />
+                <MapPin className="w-5 h-5 text-[var(--color-brand-light)] mr-3 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>
                   {siteConfig.contact.address}
                   <br />
@@ -84,13 +84,13 @@ export function Footer() {
                 </span>
               </li>
               <li className="flex items-center text-[var(--color-text-muted)] text-sm">
-                <Phone className="w-5 h-5 text-[var(--color-brand)] mr-3 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-[var(--color-brand-light)] mr-3 flex-shrink-0" aria-hidden="true" />
                 <a href={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`} className="hover:text-[var(--color-brand-light)] transition-colors">
                   {siteConfig.contact.phone}
                 </a>
               </li>
               <li className="flex items-center text-[var(--color-text-muted)] text-sm">
-                <Mail className="w-5 h-5 text-[var(--color-brand)] mr-3 flex-shrink-0" />
+                <Mail className="w-5 h-5 text-[var(--color-brand-light)] mr-3 flex-shrink-0" aria-hidden="true" />
                 <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-[var(--color-brand-light)] transition-colors">
                   {siteConfig.contact.email}
                 </a>
@@ -101,16 +101,16 @@ export function Footer() {
           {/* Book */}
           <div>
             <h3 className="text-white font-heading text-lg mb-6 uppercase tracking-wider">
-              Bestil Tid
+              Bestil tid
             </h3>
             <p className="text-[var(--color-text-muted)] text-sm mb-6 leading-relaxed">
-              Book din næste klipning online, eller kom forbi salonen.
+              Book din næste klipning online, ring til os, eller kom forbi salonen.
             </p>
             <a
               href={siteConfig.contact.bookingUrl}
-              className="inline-flex items-center justify-center bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-light)] text-white px-6 py-3 text-sm font-medium uppercase tracking-wider rounded-lg hover:shadow-[0_0_24px_var(--color-brand-glow)] hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 w-full sm:w-auto cursor-pointer"
+              className="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-[var(--color-brand)] bg-gradient-to-r from-[var(--color-brand-dark)] to-[var(--color-brand)] px-6 py-3 text-sm font-medium uppercase tracking-wider text-white transition-[transform,box-shadow,filter] duration-200 hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_24px_var(--color-brand-glow)] active:scale-[0.97] sm:w-auto"
             >
-              Book Nu
+              Book tid
             </a>
           </div>
         </div>
