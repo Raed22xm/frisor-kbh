@@ -46,25 +46,25 @@ export default function BookingCalendar({ value, onChange }: BookingCalendarProp
   }, [visibleMonth])
 
   return (
-    <div className="rounded-[22px] border border-border bg-background/92 p-4 shadow-[0_10px_24px_rgba(47,33,27,0.05)] md:p-5">
+    <div className="rounded-[22px] border border-gray-200 bg-white p-4 shadow-md md:p-5">
       <div className="mb-3 flex items-center justify-between">
         <button
           type="button"
           disabled={!canGoBack}
           onClick={() => canGoBack && setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))}
           className={cn(
-            'inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors',
-            canGoBack ? 'hover:bg-card' : 'cursor-not-allowed opacity-40'
+            'inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors',
+            canGoBack ? 'hover:bg-gray-100' : 'cursor-not-allowed opacity-40'
           )}
           aria-label="Forrige måned"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <p className="font-serif text-[24px] text-foreground">{formatMonthLabel(visibleMonth)}</p>
+        <p className="font-serif text-[24px] text-gray-900">{formatMonthLabel(visibleMonth)}</p>
         <button
           type="button"
           onClick={() => setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-card"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100"
           aria-label="Næste måned"
         >
           <ChevronRight className="h-4 w-4" />
@@ -73,7 +73,7 @@ export default function BookingCalendar({ value, onChange }: BookingCalendarProp
 
       <div className="grid grid-cols-7 gap-1.5 text-center">
         {weekdayLabels.map((label) => (
-          <div key={label} className="pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground md:text-[11px]">
+          <div key={label} className="pb-1 text-[10px] uppercase tracking-[0.14em] text-gray-500 md:text-[11px]">
             {label}
           </div>
         ))}
@@ -91,16 +91,18 @@ export default function BookingCalendar({ value, onChange }: BookingCalendarProp
             <button
               key={key}
               type="button"
-              disabled={disabled}
               aria-label={formatDateLabel(key)}
               aria-pressed={selected}
-              onClick={() => onChange(key)}
+              onClick={() => {
+                console.log("Clicked:", key, "Disabled state was:", disabled);
+                onChange(key);
+              }}
               className={cn(
                 'aspect-square rounded-[14px] border text-[13px] font-medium transition-all md:text-[14px]',
                 selected
-                  ? 'border-primary bg-primary text-primary-foreground shadow-[0_10px_20px_rgba(168,116,59,0.24)]'
-                  : 'border-border bg-background text-foreground hover:border-primary/60 hover:bg-background',
-                disabled && 'cursor-not-allowed border-border/50 bg-card/60 text-muted-foreground/60 hover:border-border/50 hover:bg-card/60'
+                  ? 'border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                  : 'border-gray-200 bg-white text-gray-900 hover:border-emerald-600/60 hover:bg-gray-50',
+                disabled && 'cursor-not-allowed border-gray-100 bg-gray-50/50 text-gray-400 hover:border-gray-100 hover:bg-gray-50/50'
               )}
             >
               {day.getDate()}
@@ -108,7 +110,7 @@ export default function BookingCalendar({ value, onChange }: BookingCalendarProp
           )
         })}
       </div>
-      <p className="mt-3 text-[12px] text-muted-foreground">Søndage er ikke tilgængelige for booking.</p>
+      <p className="mt-3 text-[12px] text-gray-500">Søndage er ikke tilgængelige for booking.</p>
     </div>
   )
 }

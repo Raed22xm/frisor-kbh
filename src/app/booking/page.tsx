@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function BookingPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-background px-4 py-16 sm:px-6 md:px-8 pt-32">
+    <main id="main-content" className="min-h-screen bg-gray-50 px-4 py-16 sm:px-6 md:px-8 pt-32">
       <div className="mx-auto max-w-[1180px]">
         <BookingWizard />
       </div>

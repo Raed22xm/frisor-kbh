@@ -260,10 +260,10 @@ export default function BookingWizard() {
 
   return (
     <div className="space-y-6 md:space-y-7">
-      <div className="flex items-center justify-between gap-4 text-muted-foreground">
+      <div className="flex items-center justify-between gap-4 text-gray-500">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.28em] transition-colors hover:text-[var(--color-accent)]"
+          className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.28em] transition-colors hover:text-emerald-600"
         >
           <ArrowLeft className="h-4 w-4" />
           Tilbage til forsiden
@@ -271,23 +271,23 @@ export default function BookingWizard() {
       </div>
 
       <div className="space-y-3 text-center">
-        <div className="text-[11px] uppercase tracking-[0.3em] text-[var(--color-accent)]">
+        <div className="text-[11px] uppercase tracking-[0.3em] text-emerald-600">
           [ Book tid ]
         </div>
         <div className="mx-auto max-w-[820px] space-y-3">
-          <h1 className="text-[38px] font-bold leading-[0.98] tracking-[-0.04em] text-foreground sm:text-[46px] lg:text-[58px]">
+          <h1 className="text-[38px] font-bold leading-[0.98] tracking-[-0.04em] text-gray-900 sm:text-[46px] lg:text-[58px]">
             Booking hos FRISØR KBH
           </h1>
-          <p className="mx-auto max-w-[760px] text-[15px] leading-[1.7] text-muted-foreground sm:text-[17px]">
+          <p className="mx-auto max-w-[760px] text-[15px] leading-[1.7] text-gray-500 sm:text-[17px]">
             Vælg behandling, medarbejder og ledig tid — book din frisørtid på
             Vesterbrogade 171.
           </p>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[var(--color-card)]/80 shadow-[0_16px_40px_rgba(0,0,0,0.3)] backdrop-blur-sm">
+      <div className="overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-lg ">
         <nav aria-label="Booking trin">
-          <ol className="grid grid-cols-2 border-b border-white/10 md:grid-cols-4">
+          <ol className="grid grid-cols-2 border-b border-gray-200 md:grid-cols-4">
             {stepLabels.map((label, index) => {
               const active = step === index;
               const completed = step > index || step === 4;
@@ -301,14 +301,14 @@ export default function BookingWizard() {
                     className={cn(
                       "flex h-11 w-11 items-center justify-center rounded-full border text-[15px] font-semibold transition-all md:h-12 md:w-12 md:text-[16px]",
                       active || completed
-                        ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white"
-                        : "border-white/20 bg-white/5 text-muted-foreground"
+                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        : "border-gray-200 bg-white text-gray-500"
                     )}
                     aria-hidden="true"
                   >
                     {index + 1}
                   </div>
-                  <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px] md:text-[12px] md:tracking-[0.22em]">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500 sm:text-[11px] md:text-[12px] md:tracking-[0.22em]">
                     {label}
                   </div>
                 </li>
@@ -331,7 +331,7 @@ export default function BookingWizard() {
 
           {loadingCatalog ? (
             <p
-              className="py-10 text-center text-[15px] text-muted-foreground"
+              className="py-10 text-center text-[15px] text-gray-500"
               aria-live="polite"
             >
               Henter behandlinger...
@@ -351,11 +351,11 @@ export default function BookingWizard() {
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-gray-900 outline-none md:text-[42px]"
                 >
                   Vælg behandling
                 </h2>
-                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-muted-foreground md:text-[16px]">
+                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-gray-500 md:text-[16px]">
                   Vælg den behandling, der passer bedst til dit besøg.
                 </p>
               </div>
@@ -365,15 +365,15 @@ export default function BookingWizard() {
                     key={treatment.id}
                     type="button"
                     onClick={() => chooseTreatment(treatment.id)}
-                    className="rounded-[22px] border border-white/10 bg-white/5 px-5 py-5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)]/60 hover:shadow-[0_14px_24px_rgba(0,0,0,0.2)]"
+                    className="rounded-[22px] border border-gray-200 bg-white px-5 py-5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-600/60 hover:shadow-md"
                   >
-                    <h3 className="text-[24px] font-bold leading-none text-foreground md:text-[28px]">
+                    <h3 className="text-[24px] font-bold leading-none text-gray-900 md:text-[28px]">
                       {treatment.name}
                     </h3>
-                    <p className="mt-3 text-[14px] font-medium text-[var(--color-accent)]">
+                    <p className="mt-3 text-[14px] font-medium text-emerald-600">
                       {treatment.price}
                     </p>
-                    <p className="mt-1 text-[14px] text-muted-foreground">
+                    <p className="mt-1 text-[14px] text-gray-500">
                       Ca. {treatment.durationMinutes} min
                     </p>
                   </button>
@@ -389,11 +389,11 @@ export default function BookingWizard() {
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-gray-900 outline-none md:text-[42px]"
                 >
                   Vælg medarbejder
                 </h2>
-                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-muted-foreground md:text-[16px]">
+                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-gray-500 md:text-[16px]">
                   Vælg den medarbejder du ønsker tid hos.
                 </p>
               </div>
@@ -403,12 +403,12 @@ export default function BookingWizard() {
                     key={employee.id}
                     type="button"
                     onClick={() => chooseEmployee(employee.id)}
-                    className="rounded-[22px] border border-white/10 bg-white/5 px-5 py-6 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-accent)]/60 hover:shadow-[0_14px_24px_rgba(0,0,0,0.2)]"
+                    className="rounded-[22px] border border-gray-200 bg-white px-5 py-6 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-600/60 hover:shadow-md"
                   >
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600/10 text-emerald-600">
                       <UserRound className="h-5 w-5" />
                     </div>
-                    <h3 className="text-[24px] font-bold leading-none text-foreground md:text-[28px]">
+                    <h3 className="text-[24px] font-bold leading-none text-gray-900 md:text-[28px]">
                       {employee.name}
                     </h3>
                   </button>
@@ -424,11 +424,11 @@ export default function BookingWizard() {
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-gray-900 outline-none md:text-[42px]"
                 >
                   Vælg dato & tid
                 </h2>
-                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-muted-foreground md:text-[16px]">
+                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-gray-500 md:text-[16px]">
                   Vælg en dag i kalenderen og derefter en ledig tid.
                 </p>
               </div>
@@ -443,8 +443,8 @@ export default function BookingWizard() {
                   }}
                 />
 
-                <div className="rounded-[22px] border border-white/10 bg-white/5 p-4 md:p-5">
-                  <div className="mb-4 flex items-center gap-2.5 text-muted-foreground">
+                <div className="rounded-[22px] border border-gray-200 bg-white p-4 md:p-5">
+                  <div className="mb-4 flex items-center gap-2.5 text-gray-500">
                     <Clock3 className="h-4 w-4" />
                     <span className="text-[12px] uppercase tracking-[0.16em]">
                       Ledige tider
@@ -452,20 +452,20 @@ export default function BookingWizard() {
                   </div>
 
                   {!selectedDate ? (
-                    <p className="text-[14px] leading-[1.7] text-muted-foreground">
+                    <p className="text-[14px] leading-[1.7] text-gray-500">
                       Vælg først en dato for at se ledige tider.
                     </p>
                   ) : loadingSlots ? (
-                    <p className="text-[14px] leading-[1.7] text-muted-foreground">
+                    <p className="text-[14px] leading-[1.7] text-gray-500">
                       Henter ledige tider...
                     </p>
                   ) : availableSlots.length === 0 ? (
-                    <p className="text-[14px] leading-[1.7] text-muted-foreground">
+                    <p className="text-[14px] leading-[1.7] text-gray-500">
                       Ingen ledige tider på den valgte dag.
                     </p>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-[14px] leading-[1.7] text-muted-foreground">
+                      <p className="text-[14px] leading-[1.7] text-gray-500">
                         {formatDateLabel(selectedDate)}
                       </p>
                       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -480,8 +480,8 @@ export default function BookingWizard() {
                             className={cn(
                               "rounded-[14px] border px-3.5 py-2.5 text-[14px] font-medium transition-all",
                               selectedTime === slot
-                                ? "border-[var(--color-accent)] bg-[var(--color-accent)] text-white"
-                                : "border-white/10 bg-white/5 text-muted-foreground hover:border-[var(--color-accent)]/60"
+                                ? "border-emerald-600 bg-emerald-600 text-white"
+                                : "border-gray-200 bg-white text-gray-500 hover:border-emerald-600/60"
                             )}
                           >
                             {slot}
@@ -502,62 +502,62 @@ export default function BookingWizard() {
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-gray-900 outline-none md:text-[42px]"
                 >
                   Dine oplysninger
                 </h2>
-                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-muted-foreground md:text-[16px]">
+                <p className="mx-auto max-w-[620px] text-[15px] leading-[1.7] text-gray-500 md:text-[16px]">
                   Udfyld dine oplysninger for at færdiggøre bookingen.
                 </p>
               </div>
 
               <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-                <div className="rounded-[22px] border border-white/10 bg-white/5 p-5 md:p-6">
-                  <h3 className="text-[24px] font-bold text-foreground">
+                <div className="rounded-[22px] border border-gray-200 bg-white p-5 md:p-6">
+                  <h3 className="text-[24px] font-bold text-gray-900">
                     Bookingoversigt
                   </h3>
-                  <dl className="mt-5 space-y-3 text-[14px] leading-[1.7] text-muted-foreground">
+                  <dl className="mt-5 space-y-3 text-[14px] leading-[1.7] text-gray-500">
                     <div>
-                      <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                      <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                         Behandling
                       </dt>
-                      <dd className="text-foreground">{selectedTreatmentObject?.name}</dd>
+                      <dd className="text-gray-900">{selectedTreatmentObject?.name}</dd>
                     </div>
                     <div>
-                      <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                      <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                         Pris
                       </dt>
-                      <dd className="text-foreground">{selectedTreatmentObject?.price}</dd>
+                      <dd className="text-gray-900">{selectedTreatmentObject?.price}</dd>
                     </div>
                     <div>
-                      <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                      <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                         Medarbejder
                       </dt>
-                      <dd className="text-foreground">{selectedEmployeeObject?.name}</dd>
+                      <dd className="text-gray-900">{selectedEmployeeObject?.name}</dd>
                     </div>
                     <div>
-                      <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                      <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                         Dato
                       </dt>
-                      <dd className="text-foreground">
+                      <dd className="text-gray-900">
                         {selectedDate ? formatDateLabel(selectedDate) : ""}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                      <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                         Tid
                       </dt>
-                      <dd className="text-foreground">{selectedTime}</dd>
+                      <dd className="text-gray-900">{selectedTime}</dd>
                     </div>
                   </dl>
                 </div>
 
                 <form
                   onSubmit={handleSubmit}
-                  className="grid gap-4 rounded-[22px] border border-white/10 bg-white/5 p-5 md:p-6"
+                  className="grid gap-4 rounded-[22px] border border-gray-200 bg-white p-5 md:p-6"
                 >
                   <label className="grid gap-2">
-                    <span className="text-[14px] font-medium text-muted-foreground">
+                    <span className="text-[14px] font-medium text-gray-500">
                       Navn
                     </span>
                     <input
@@ -573,7 +573,7 @@ export default function BookingWizard() {
                         clearFieldError("name");
                         setCustomer((c) => ({ ...c, name: event.target.value }));
                       }}
-                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
+                      className="rounded-[14px] border border-gray-200 bg-white px-4 py-2.5 text-gray-900 outline-none transition-colors focus:border-emerald-600"
                     />
                     {fieldErrors.name ? (
                       <span id="booking-name-error" className="text-[13px] text-red-400">
@@ -583,7 +583,7 @@ export default function BookingWizard() {
                   </label>
 
                   <label className="grid gap-2">
-                    <span className="text-[14px] font-medium text-muted-foreground">
+                    <span className="text-[14px] font-medium text-gray-500">
                       Telefon
                     </span>
                     <input
@@ -600,7 +600,7 @@ export default function BookingWizard() {
                         clearFieldError("phone");
                         setCustomer((c) => ({ ...c, phone: event.target.value }));
                       }}
-                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
+                      className="rounded-[14px] border border-gray-200 bg-white px-4 py-2.5 text-gray-900 outline-none transition-colors focus:border-emerald-600"
                     />
                     {fieldErrors.phone ? (
                       <span id="booking-phone-error" className="text-[13px] text-red-400">
@@ -610,7 +610,7 @@ export default function BookingWizard() {
                   </label>
 
                   <label className="grid gap-2">
-                    <span className="text-[14px] font-medium text-muted-foreground">
+                    <span className="text-[14px] font-medium text-gray-500">
                       E-mail
                     </span>
                     <input
@@ -627,7 +627,7 @@ export default function BookingWizard() {
                         clearFieldError("email");
                         setCustomer((c) => ({ ...c, email: event.target.value }));
                       }}
-                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
+                      className="rounded-[14px] border border-gray-200 bg-white px-4 py-2.5 text-gray-900 outline-none transition-colors focus:border-emerald-600"
                     />
                     {fieldErrors.email ? (
                       <span id="booking-email-error" className="text-[13px] text-red-400">
@@ -637,7 +637,7 @@ export default function BookingWizard() {
                   </label>
 
                   <label className="grid gap-2">
-                    <span className="text-[14px] font-medium text-muted-foreground">
+                    <span className="text-[14px] font-medium text-gray-500">
                       Noter
                     </span>
                     <textarea
@@ -647,7 +647,7 @@ export default function BookingWizard() {
                         setCustomer((c) => ({ ...c, notes: event.target.value }))
                       }
                       rows={4}
-                      className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-foreground outline-none transition-colors focus:border-[var(--color-accent)]"
+                      className="rounded-[14px] border border-gray-200 bg-white px-4 py-2.5 text-gray-900 outline-none transition-colors focus:border-emerald-600"
                     />
                   </label>
 
@@ -655,14 +655,14 @@ export default function BookingWizard() {
                     <button
                       type="button"
                       onClick={() => goToStep(2)}
-                      className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 text-[15px] font-medium transition-colors hover:bg-white/10"
+                      className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-gray-200 bg-white px-6 text-[15px] font-medium transition-colors hover:bg-gray-50"
                     >
                       Tilbage
                     </button>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--color-accent)] px-6 text-[15px] font-medium text-white transition-colors hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
+                      className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-emerald-600 px-6 text-[15px] font-medium text-white transition-colors hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
                     >
                       {submitting ? "Bekræfter..." : "Bekræft booking"}
                     </button>
@@ -682,58 +682,58 @@ export default function BookingWizard() {
                 <h2
                   ref={stepHeadingRef}
                   tabIndex={-1}
-                  className="text-[36px] font-bold leading-none text-foreground outline-none md:text-[42px]"
+                  className="text-[36px] font-bold leading-none text-gray-900 outline-none md:text-[42px]"
                 >
                   Booking bekræftet
                 </h2>
-                <p className="mx-auto max-w-[640px] text-[15px] leading-[1.7] text-muted-foreground md:text-[16px]">
+                <p className="mx-auto max-w-[640px] text-[15px] leading-[1.7] text-gray-500 md:text-[16px]">
                   Tak for din booking! Vi har sendt en bekræftelse til{" "}
-                  <strong className="text-foreground">{customer.email}</strong>.
+                  <strong className="text-gray-900">{customer.email}</strong>.
                 </p>
               </div>
-              <div className="mx-auto max-w-[640px] rounded-[22px] border border-white/10 bg-white/5 p-5 text-left md:p-6">
-                <p className="mb-4 text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="mx-auto max-w-[640px] rounded-[22px] border border-gray-200 bg-white p-5 text-left md:p-6">
+                <p className="mb-4 text-[12px] uppercase tracking-[0.18em] text-gray-500">
                   Booking ID
                 </p>
-                <p className="mb-6 text-[16px] text-muted-foreground">{successId}</p>
-                <dl className="grid gap-4 text-[15px] leading-[1.7] text-muted-foreground sm:grid-cols-2">
+                <p className="mb-6 text-[16px] text-gray-500">{successId}</p>
+                <dl className="grid gap-4 text-[15px] leading-[1.7] text-gray-500 sm:grid-cols-2">
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                       Behandling
                     </dt>
-                    <dd className="text-foreground">{selectedTreatmentObject?.name}</dd>
+                    <dd className="text-gray-900">{selectedTreatmentObject?.name}</dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                       Pris
                     </dt>
-                    <dd className="text-foreground">{selectedTreatmentObject?.price}</dd>
+                    <dd className="text-gray-900">{selectedTreatmentObject?.price}</dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                       Medarbejder
                     </dt>
-                    <dd className="text-foreground">{selectedEmployeeObject?.name}</dd>
+                    <dd className="text-gray-900">{selectedEmployeeObject?.name}</dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                       Dato
                     </dt>
-                    <dd className="text-foreground">
+                    <dd className="text-gray-900">
                       {selectedDate ? formatDateLabel(selectedDate) : ""}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                       Tid
                     </dt>
-                    <dd className="text-foreground">{selectedTime}</dd>
+                    <dd className="text-gray-900">{selectedTime}</dd>
                   </div>
                   <div>
-                    <dt className="text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="text-[12px] uppercase tracking-[0.18em] text-gray-500">
                       Navn
                     </dt>
-                    <dd className="text-foreground">{customer.name}</dd>
+                    <dd className="text-gray-900">{customer.name}</dd>
                   </div>
                 </dl>
               </div>
@@ -741,13 +741,13 @@ export default function BookingWizard() {
                 <button
                   type="button"
                   onClick={reset}
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 text-[15px] font-medium transition-colors hover:bg-white/10"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-gray-200 bg-white px-6 text-[15px] font-medium transition-colors hover:bg-gray-50"
                 >
                   Opret ny booking
                 </button>
                 <Link
                   href="/"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--color-accent)] px-6 text-[15px] font-medium text-white transition-colors hover:brightness-110"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-emerald-600 px-6 text-[15px] font-medium text-white transition-colors hover:brightness-110"
                 >
                   Tilbage til forsiden
                 </Link>

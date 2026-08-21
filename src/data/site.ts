@@ -12,7 +12,7 @@ export const siteConfig: SiteConfig = {
     address: "Vesterbrogade 171",
     postalCode: "1800",
     city: "Frederiksberg",
-    bookingUrl: "[BOOKING URL]",
+    bookingUrl: "/booking",
     directionsUrl:
       "https://www.google.com/maps/search/?api=1&query=Vesterbrogade%20171%2C%201800%20Frederiksberg",
   },
