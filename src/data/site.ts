@@ -12,8 +12,7 @@ export const siteConfig: SiteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://frisor-kbh.dk",
   contact: {
     phone: "+45 42 20 24 29",
-    // REC-01: real email — update when confirmed
-    email: "booking@frisor-kbh.dk",
+    email: "frisorkbh@hotmail.com",
     address: "Vesterbrogade 171",
     postalCode: "1800",
     city: "Frederiksberg",

@@ -44,7 +44,7 @@ export default async function SettingsPage() {
               <label className="block text-sm font-medium text-gray-700">Kontakt Email</label>
               <input
                 type="email"
-                defaultValue="booking@frisor-kbh.dk"
+                defaultValue="frisorkbh@hotmail.com"
                 disabled
                 className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 py-2 px-3 text-sm text-gray-500 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border"
               />

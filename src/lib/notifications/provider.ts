@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { siteConfig } from "@/data/site";
 
 const apiKey = process.env.RESEND_API_KEY;
 export const resend = apiKey ? new Resend(apiKey) : null;
@@ -26,6 +27,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<void> {
 
   const { error } = await resend.emails.send({
     from: defaultFrom,
+    replyTo: process.env.EMAIL_REPLY_TO || siteConfig.contact.email,
     to: options.to,
     subject: options.subject,
     html: options.html,

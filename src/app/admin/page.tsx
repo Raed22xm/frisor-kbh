@@ -1,10 +1,39 @@
 import { CalendarDays, DollarSign, Users, TrendingUp } from "lucide-react";
+import { asc, eq } from "drizzle-orm";
 import { Scorecard } from "@/components/admin/Scorecard";
 import { BookingTrendsChart } from "@/components/admin/BookingTrendsChart";
 import { ServicePopularityChart } from "@/components/admin/ServicePopularityChart";
 import { UpcomingAppointmentsTable } from "@/components/admin/UpcomingAppointmentsTable";
+import { AdminBookingCalendar } from "@/components/admin/AdminBookingCalendar";
+import { getDateKeyInTimeZone } from "@/lib/booking/business-hours";
+import { getDb } from "@/lib/db/client";
+import { bookings, customers } from "@/lib/db/schema";
 
-export default function AdminDashboardPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminDashboardPage() {
+  const db = getDb();
+  const calendarRows = await db
+    .select({
+      id: bookings.id,
+      date: bookings.date,
+      time: bookings.time,
+      durationMinutes: bookings.durationMinutes,
+      treatmentName: bookings.treatmentName,
+      employeeName: bookings.employeeName,
+      status: bookings.status,
+      priceLabel: bookings.priceLabel,
+      customerName: customers.name,
+    })
+    .from(bookings)
+    .leftJoin(customers, eq(bookings.customerId, customers.id))
+    .orderBy(asc(bookings.date), asc(bookings.time));
+
+  const calendarAppointments = calendarRows.map((row) => ({
+    ...row,
+    customerName: row.customerName ?? "Ukendt kunde",
+  }));
+
   return (
     <div className="space-y-6">
       <div>
@@ -41,6 +70,11 @@ export default function AdminDashboardPage() {
           icon={<TrendingUp className="h-5 w-5" />}
         />
       </div>
+
+      <AdminBookingCalendar
+        appointments={calendarAppointments}
+        today={getDateKeyInTimeZone()}
+      />
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

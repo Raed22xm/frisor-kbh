@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { categories, treatments } from "@/lib/db/schema";
+import { requireAdmin } from "@/lib/auth/admin";
 
 const idSchema = z.string().trim().min(1).max(120);
 const imagePathSchema = z.string().regex(/^services\/[0-9a-f-]+\.(?:jpg|png|webp)$/);
@@ -67,6 +68,7 @@ async function removeStoredImage(storagePath: string | null | undefined) {
 }
 
 export async function prepareTreatmentImageUpload(input: z.input<typeof uploadSchema>) {
+  await requireAdmin();
   const parsed = uploadSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: "Billedet er ugyldigt." };
 
@@ -91,6 +93,7 @@ export async function prepareTreatmentImageUpload(input: z.input<typeof uploadSc
 }
 
 export async function discardTreatmentImageUpload(storagePath: string) {
+  await requireAdmin();
   const parsed = imagePathSchema.safeParse(storagePath);
   if (!parsed.success) return { success: false };
   const warning = await removeStoredImage(parsed.data);
@@ -98,6 +101,7 @@ export async function discardTreatmentImageUpload(storagePath: string) {
 }
 
 export async function addTreatment(input: z.input<typeof treatmentSchema>) {
+  await requireAdmin();
   const parsed = treatmentSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: "Kontrollér behandlingens oplysninger." };
 
@@ -134,6 +138,7 @@ export async function addTreatment(input: z.input<typeof treatmentSchema>) {
 }
 
 export async function updateTreatment(id: string, input: z.input<typeof treatmentSchema>) {
+  await requireAdmin();
   const parsedId = idSchema.safeParse(id);
   const parsed = treatmentSchema.safeParse(input);
   if (!parsedId.success || !parsed.success) {
@@ -175,6 +180,7 @@ export async function updateTreatment(id: string, input: z.input<typeof treatmen
 }
 
 export async function setTreatmentStatus(id: string, active: boolean) {
+  await requireAdmin();
   const parsedId = idSchema.safeParse(id);
   if (!parsedId.success || typeof active !== "boolean") {
     return { success: false, error: "Status kunne ikke ændres." };
@@ -185,6 +191,7 @@ export async function setTreatmentStatus(id: string, active: boolean) {
 }
 
 export async function reorderTreatments(categoryId: string, ids: string[]) {
+  await requireAdmin();
   const parsedCategoryId = idSchema.safeParse(categoryId);
   const parsedIds = z.array(idSchema).min(1).max(100).safeParse(ids);
   if (!parsedCategoryId.success || !parsedIds.success) {
@@ -218,6 +225,7 @@ export async function reorderTreatments(categoryId: string, ids: string[]) {
 }
 
 export async function deleteTreatment(id: string) {
+  await requireAdmin();
   const parsedId = idSchema.safeParse(id);
   if (!parsedId.success) return { success: false, error: "Behandlingen blev ikke fundet." };
 

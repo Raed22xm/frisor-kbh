@@ -2,7 +2,7 @@
 
 import { Bell, Search, UserCircle } from "lucide-react";
 
-export function AdminHeader() {
+export function AdminHeader({ adminName }: { adminName: string }) {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6">
       <div className="flex flex-1 items-center">
@@ -26,7 +26,7 @@ export function AdminHeader() {
         </button>
         <div className="flex items-center gap-2">
           <UserCircle className="h-8 w-8 text-gray-400" />
-          <span className="text-sm font-medium text-gray-700">Admin</span>
+          <span className="text-sm font-medium text-gray-700">{adminName}</span>
         </div>
       </div>
     </header>

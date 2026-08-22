@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { galleryImages } from "@/lib/db/schema";
+import { requireAdmin } from "@/lib/auth/admin";
 
 const idSchema = z.string().uuid();
 const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
@@ -50,6 +51,7 @@ function refreshGallery() {
 }
 
 export async function checkGalleryDuplicate(fileHash: string) {
+  await requireAdmin();
   const parsedHash = hashSchema.safeParse(fileHash);
   if (!parsedHash.success) return { success: false, duplicate: false };
 
@@ -63,6 +65,7 @@ export async function checkGalleryDuplicate(fileHash: string) {
 }
 
 export async function prepareGalleryUpload(input: z.input<typeof uploadRequestSchema>) {
+  await requireAdmin();
   const parsed = uploadRequestSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false, error: "Filen er ugyldig." };
@@ -105,6 +108,7 @@ export async function prepareGalleryUpload(input: z.input<typeof uploadRequestSc
 }
 
 export async function addGalleryImage(input: z.input<typeof galleryInputSchema>) {
+  await requireAdmin();
   const parsed = galleryInputSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false, error: "Mediets oplysninger er ugyldige." };
@@ -148,6 +152,7 @@ export async function updateGalleryImage(
   id: string,
   input: z.input<typeof detailsSchema>
 ) {
+  await requireAdmin();
   const parsedId = idSchema.safeParse(id);
   const parsedInput = detailsSchema.safeParse(input);
   if (!parsedId.success || !parsedInput.success) {
@@ -163,6 +168,7 @@ export async function updateGalleryImage(
 }
 
 export async function setGalleryImageVisibility(id: string, active: boolean) {
+  await requireAdmin();
   const parsedId = idSchema.safeParse(id);
   if (!parsedId.success || typeof active !== "boolean") {
     return { success: false, error: "Mediet kunne ikke opdateres." };
@@ -177,6 +183,7 @@ export async function setGalleryImageVisibility(id: string, active: boolean) {
 }
 
 export async function reorderGalleryImages(ids: string[]) {
+  await requireAdmin();
   const parsedIds = z.array(idSchema).min(1).max(100).safeParse(ids);
   if (!parsedIds.success || new Set(parsedIds.data).size !== parsedIds.data.length) {
     return { success: false, error: "Rækkefølgen er ugyldig." };
@@ -209,6 +216,7 @@ export async function reorderGalleryImages(ids: string[]) {
 }
 
 export async function deleteGalleryImage(id: string) {
+  await requireAdmin();
   const parsedId = idSchema.safeParse(id);
   if (!parsedId.success) return { success: false, error: "Mediet blev ikke fundet." };
 
