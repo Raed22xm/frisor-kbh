@@ -17,7 +17,7 @@ export default async function GalleryPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">Galleri</h1>
         <p className="mt-1 max-w-2xl text-sm text-gray-500">
-          Tilføj, redigér, sortér, skjul og slet billeder. Ændringer vises direkte på forsiden.
+          Tilføj, redigér, sortér, skjul og slet billeder og videoer. Ændringer vises direkte på forsiden.
         </p>
       </div>
 
@@ -27,7 +27,7 @@ export default async function GalleryPage() {
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
             <h2 id="gallery-manager-title" className="text-lg font-semibold text-gray-900">
-              Dine billeder ({images.length})
+              Dine medier ({images.length})
             </h2>
             <p className="mt-1 text-xs text-gray-500">Brug pilene til at ændre rækkefølgen på forsiden.</p>
           </div>

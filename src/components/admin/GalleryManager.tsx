@@ -14,6 +14,7 @@ import {
 export type ManagedGalleryImage = {
   id: string;
   url: string;
+  mediaType: string;
   altText: string;
   caption: string;
   active: boolean;
@@ -49,14 +50,26 @@ function GalleryCard({
   return (
     <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="relative aspect-[4/3] bg-gray-100">
-        <Image
-          src={image.url}
-          alt={image.altText || "Galleribillede"}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 33vw"
-          unoptimized={image.url.startsWith("http")}
-        />
+        {image.mediaType === "video" ? (
+          <video
+            src={image.url}
+            aria-label={image.altText || "Gallerivideo"}
+            className="h-full w-full object-cover"
+            controls
+            muted
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <Image
+            src={image.url}
+            alt={image.altText || "Galleribillede"}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            unoptimized={image.url.startsWith("http")}
+          />
+        )}
         <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold text-white ${image.active ? "bg-emerald-700" : "bg-gray-700"}`}>
           {image.active ? "Synlig" : "Skjult"}
         </span>
@@ -74,18 +87,18 @@ function GalleryCard({
             onChange={(event) => setAltText(event.target.value)}
             maxLength={180}
             className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
-            placeholder="Beskriv hvad billedet viser"
+            placeholder="Beskriv hvad mediet viser"
           />
         </div>
         <div>
-          <label htmlFor={`caption-${image.id}`} className="text-xs font-semibold text-gray-700">Billedtekst</label>
+          <label htmlFor={`caption-${image.id}`} className="text-xs font-semibold text-gray-700">Tekst</label>
           <input
             id={`caption-${image.id}`}
             value={caption}
             onChange={(event) => setCaption(event.target.value)}
             maxLength={120}
             className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
-            placeholder="Valgfri tekst i stort galleri"
+            placeholder="Valgfri tekst i galleriet"
           />
         </div>
 
@@ -111,7 +124,7 @@ function GalleryCard({
             type="button"
             onClick={() => onMove(image.id, -1)}
             disabled={isPending || index === 0}
-            aria-label="Flyt billedet mod venstre"
+            aria-label="Flyt mediet mod venstre"
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-30"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -120,7 +133,7 @@ function GalleryCard({
             type="button"
             onClick={() => onMove(image.id, 1)}
             disabled={isPending || index === total - 1}
-            aria-label="Flyt billedet mod højre"
+            aria-label="Flyt mediet mod højre"
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-30"
           >
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -128,7 +141,7 @@ function GalleryCard({
           <button
             type="button"
             onClick={() => {
-              if (window.confirm(`Slet “${caption || altText || "dette billede"}” permanent fra galleriet?`)) {
+              if (window.confirm(`Slet “${caption || altText || "dette medie"}” permanent fra galleriet?`)) {
                 run(() => deleteGalleryImage(image.id));
               }
             }}
@@ -172,7 +185,7 @@ export function GalleryManager({ images }: { images: ManagedGalleryImage[] }) {
   if (orderedImages.length === 0) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
-        <p className="text-sm text-gray-500">Du har ikke uploadet nogen billeder endnu.</p>
+        <p className="text-sm text-gray-500">Du har ikke uploadet billeder eller videoer endnu.</p>
       </div>
     );
   }

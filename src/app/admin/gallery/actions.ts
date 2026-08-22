@@ -13,6 +13,7 @@ const galleryInputSchema = z.object({
   url: z.string().url(),
   storagePath: z.string().min(1).max(500),
   fileHash: hashSchema,
+  mediaType: z.enum(["image", "video"]),
   altText: z.string().trim().max(180).default(""),
 });
 const detailsSchema = z.object({
@@ -21,8 +22,15 @@ const detailsSchema = z.object({
 });
 const uploadRequestSchema = z.object({
   fileName: z.string().min(1).max(255),
-  mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
-  fileSize: z.number().int().positive().max(5 * 1024 * 1024),
+  mimeType: z.enum([
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "video/mp4",
+    "video/webm",
+    "video/quicktime",
+  ]),
+  fileSize: z.number().int().positive().max(50 * 1024 * 1024),
   fileHash: hashSchema,
 });
 
@@ -60,9 +68,16 @@ export async function prepareGalleryUpload(input: z.input<typeof uploadRequestSc
     return { success: false, error: "Filen er ugyldig." };
   }
 
+  const mediaType: "image" | "video" = parsed.data.mimeType.startsWith("video/")
+    ? "video"
+    : "image";
+  if (mediaType === "image" && parsed.data.fileSize > 5 * 1024 * 1024) {
+    return { success: false, error: "Billedet må højst fylde 5 MB." };
+  }
+
   const duplicateCheck = await checkGalleryDuplicate(parsed.data.fileHash);
   if (duplicateCheck.duplicate) {
-    return { success: false, duplicate: true, error: "Billedet findes allerede i galleriet." };
+    return { success: false, duplicate: true, error: "Filen findes allerede i galleriet." };
   }
 
   const supabase = getSupabaseAdmin();
@@ -72,6 +87,9 @@ export async function prepareGalleryUpload(input: z.input<typeof uploadRequestSc
     "image/jpeg": "jpg",
     "image/png": "png",
     "image/webp": "webp",
+    "video/mp4": "mp4",
+    "video/webm": "webm",
+    "video/quicktime": "mov",
   } as const;
   const storagePath = `uploads/${crypto.randomUUID()}.${extensionByType[parsed.data.mimeType]}`;
   const { data, error } = await supabase.storage
@@ -83,13 +101,13 @@ export async function prepareGalleryUpload(input: z.input<typeof uploadRequestSc
     return { success: false, error: "Upload kunne ikke forberedes." };
   }
 
-  return { success: true, storagePath, token: data.token };
+  return { success: true, storagePath, token: data.token, mediaType };
 }
 
 export async function addGalleryImage(input: z.input<typeof galleryInputSchema>) {
   const parsed = galleryInputSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false, error: "Billedets oplysninger er ugyldige." };
+    return { success: false, error: "Mediets oplysninger er ugyldige." };
   }
 
   try {
@@ -106,7 +124,7 @@ export async function addGalleryImage(input: z.input<typeof galleryInputSchema>)
       .limit(1);
 
     if (duplicate) {
-      return { success: false, duplicate: true, error: "Billedet findes allerede i galleriet." };
+      return { success: false, duplicate: true, error: "Filen findes allerede i galleriet." };
     }
 
     const [lastPosition] = await db
@@ -122,7 +140,7 @@ export async function addGalleryImage(input: z.input<typeof galleryInputSchema>)
     return { success: true };
   } catch (error) {
     console.error("Failed to add gallery image:", error);
-    return { success: false, error: "Billedet kunne ikke gemmes." };
+    return { success: false, error: "Mediet kunne ikke gemmes." };
   }
 }
 
@@ -147,7 +165,7 @@ export async function updateGalleryImage(
 export async function setGalleryImageVisibility(id: string, active: boolean) {
   const parsedId = idSchema.safeParse(id);
   if (!parsedId.success || typeof active !== "boolean") {
-    return { success: false, error: "Billedet kunne ikke opdateres." };
+    return { success: false, error: "Mediet kunne ikke opdateres." };
   }
 
   await getDb()
@@ -192,7 +210,7 @@ export async function reorderGalleryImages(ids: string[]) {
 
 export async function deleteGalleryImage(id: string) {
   const parsedId = idSchema.safeParse(id);
-  if (!parsedId.success) return { success: false, error: "Billedet blev ikke fundet." };
+  if (!parsedId.success) return { success: false, error: "Mediet blev ikke fundet." };
 
   const db = getDb();
   const [image] = await db
@@ -200,7 +218,7 @@ export async function deleteGalleryImage(id: string) {
     .from(galleryImages)
     .where(and(eq(galleryImages.id, parsedId.data)))
     .limit(1);
-  if (!image) return { success: false, error: "Billedet blev ikke fundet." };
+  if (!image) return { success: false, error: "Mediet blev ikke fundet." };
 
   await db.delete(galleryImages).where(eq(galleryImages.id, parsedId.data));
 
@@ -211,7 +229,7 @@ export async function deleteGalleryImage(id: string) {
       const { error } = await supabase.storage.from("gallery").remove([image.storagePath]);
       if (error) {
         console.error("Failed to remove gallery storage object:", error);
-        warning = "Billedet blev fjernet fra galleriet, men lagerfilen kunne ikke slettes.";
+        warning = "Mediet blev fjernet fra galleriet, men lagerfilen kunne ikke slettes.";
       }
     }
   }

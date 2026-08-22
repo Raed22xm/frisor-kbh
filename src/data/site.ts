@@ -1,11 +1,4 @@
-import { SiteConfig, NavigationItem, ServiceItem, OpeningHoursItem, BenefitItem } from "@/types/site";
-
-// ---------------------------------------------------------------------------
-// Helper — formats a numeric price as a Danish display string
-// ---------------------------------------------------------------------------
-function kr(amount: number): string {
-  return `${amount} kr.`;
-}
+import { SiteConfig, NavigationItem, OpeningHoursItem, BenefitItem } from "@/types/site";
 
 // ---------------------------------------------------------------------------
 // Site Configuration
@@ -49,95 +42,6 @@ export const navigation: NavigationItem[] = [
   { label: "Priser", href: "/#services" },
   { label: "Galleri", href: "/#gallery" },
   { label: "Kontakt", href: "/#contact" },
-];
-
-// ---------------------------------------------------------------------------
-// Services  (REC-01 + REC-14: price is now number | null)
-// ---------------------------------------------------------------------------
-export const services: ServiceItem[] = [
-  {
-    id: "herreklip",
-    name: "Herreklip",
-    price: 200,
-    description: "Klassisk herreklip med saks og maskine, afsluttet med styling.",
-    duration: "30 min",
-    durationMinutes: 30,
-    featured: true,
-    image: "/images/services/herreklip-customer.webp",
-    imageAlt: "Kunde med færdig klassisk herreklip",
-  },
-  {
-    id: "skaeg",
-    name: "Skæg",
-    price: 125,
-    description: "Trimning og formning af skæg, så linjerne står skarpt.",
-    duration: "15 min",
-    durationMinutes: 15,
-    featured: true,
-    image: "/images/services/skaegtrimning-customer.webp",
-    imageAlt: "Kunde med færdigtrimmet og formet skæg",
-  },
-  {
-    id: "haar-og-skaeg",
-    name: "Hår og skæg",
-    price: 300,
-    description: "Komplet behandling med klipning, skægtrimning og skarpe kanter.",
-    duration: "45 min",
-    durationMinutes: 45,
-    featured: true,
-    image: "/images/services/herreklip-og-skaeg-customer.webp",
-    imageAlt: "Kunde med frisk herreklip og formet skæg",
-  },
-  {
-    id: "pensionist",
-    name: "Pensionist",
-    price: 180,
-    description: "Rolig og grundig klipning til pensionister med fokus på et pænt, naturligt resultat.",
-    duration: "30 min",
-    durationMinutes: 30,
-    image: "/images/services/pensionistklip-customer.webp",
-    imageAlt: "Ældre kunde med færdig klassisk klipning og sølvgråt hår",
-  },
-  {
-    id: "pensionist-med-saks",
-    name: "Pensionist (med saks)",
-    price: 200,
-    description: "Klassisk pensionistklip udført med saks for et naturligt resultat.",
-    duration: "30 min",
-    durationMinutes: 30,
-    image: "/images/services/pensionist-saks-customer-v2.jpg",
-    imageAlt: "Pensionist med klassisk sakseklip",
-  },
-  {
-    id: "maskineklip",
-    name: "Maskineklip",
-    price: 100,
-    description: "Ensartet, kort klipning med maskine.",
-    duration: "15 min",
-    durationMinutes: 15,
-    image: "/images/services/maskineklip-customer-v2.jpg",
-    imageAlt: "Kunde med kort maskineklip",
-  },
-  {
-    id: "boerneklip-under-10",
-    name: "Børneklip (under 10 år)",
-    price: 180,
-    description: "Tryg og rolig klipning for børn under 10 år.",
-    duration: "30 min",
-    durationMinutes: 30,
-    image: "/images/services/boerneklip-customer-v2.jpg",
-    imageAlt: "Barn med færdig børneklipning",
-  },
-  {
-    id: "haarfjerning-voks-traad",
-    name: "Hårfjerning med voks og tråd",
-    price: 50,
-    description: "Præcis hårfjerning med voks og tråd.",
-    duration: "15 min",
-    durationMinutes: 15,
-    image: "/images/services/haarfjerning-voks-traad-customer-v2.jpg",
-    imageAlt: "Hårfjerning med tråd",
-  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -185,5 +89,5 @@ export const openingHours: OpeningHoursItem[] = [
 export function formatPrice(price: number | null, priceDisplay?: string): string {
   if (priceDisplay) return priceDisplay;
   if (price === null) return "Kontakt os";
-  return kr(price);
+  return `${price} kr.`;
 }

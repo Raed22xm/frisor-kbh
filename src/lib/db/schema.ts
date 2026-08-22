@@ -49,9 +49,14 @@ export const treatments = pgTable("treatments", {
     .notNull()
     .references(() => categories.id),
   name: text("name").notNull(),
+  description: text("description").notNull().default(""),
   durationMinutes: integer("duration_minutes").notNull(),
   price: text("price").notNull(),
   image: text("image"),
+  imageAlt: text("image_alt").notNull().default(""),
+  imageStoragePath: text("image_storage_path"),
+  featured: boolean("featured").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
 });
 
@@ -145,6 +150,7 @@ export const galleryImages = pgTable(
     url: text("url").notNull(),
     storagePath: text("storage_path"),
     fileHash: text("file_hash"),
+    mediaType: text("media_type").notNull().default("image"),
     altText: text("alt_text").notNull().default(""),
     caption: text("caption").notNull().default(""),
     sortOrder: integer("sort_order").notNull().default(0),

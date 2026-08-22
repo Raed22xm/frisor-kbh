@@ -67,6 +67,7 @@ export interface GalleryItem {
   id: string;
   src: string;
   alt: string;
+  mediaType: "image" | "video";
   /** Optional caption shown in lightbox */
   caption?: string;
 }

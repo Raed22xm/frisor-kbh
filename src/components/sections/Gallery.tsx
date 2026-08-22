@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { GalleryItem } from "@/types/site";
 
@@ -120,14 +120,23 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                   lastTriggerRef.current = event.currentTarget;
                   setLightboxIndex(index);
                 }}
-                aria-label={`Vis stort: ${item.alt}`}
+                aria-label={`Åbn ${item.mediaType === "video" ? "video" : "billede"}: ${item.alt}`}
                 className={cn(
                   "group relative aspect-square cursor-pointer overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--color-surface)]",
                   "transition-[transform,border-color,box-shadow] duration-300 hover:border-white/[0.2] hover:shadow-[var(--shadow-lg)]",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)]"
                 )}
               >
-                {!imgErrors[item.id] ? (
+                {item.mediaType === "video" ? (
+                  <video
+                    src={item.src}
+                    aria-label={item.alt}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : !imgErrors[item.id] ? (
                   <Image
                     src={item.src}
                     alt={item.alt}
@@ -148,8 +157,12 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
 
                 <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
                   <span className="flex items-center gap-2 rounded-lg border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-medium uppercase tracking-widest text-white">
-                    <ZoomIn className="h-4 w-4" aria-hidden="true" />
-                    Vis stort
+                    {item.mediaType === "video" ? (
+                      <Play className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <ZoomIn className="h-4 w-4" aria-hidden="true" />
+                    )}
+                    {item.mediaType === "video" ? "Afspil" : "Vis stort"}
                   </span>
                 </div>
               </button>
@@ -187,7 +200,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                 previous !== null ? (previous - 1 + total) % total : total - 1
               );
             }}
-            aria-label="Forrige billede"
+            aria-label="Forrige medie"
             className="glass-card absolute left-2 z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition-[color,box-shadow] hover:text-[var(--color-brand-light)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)] sm:left-4"
           >
             <ChevronLeft className="h-5 w-5" aria-hidden="true" />
@@ -201,7 +214,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                 previous !== null ? (previous + 1) % total : 0
               );
             }}
-            aria-label="Næste billede"
+            aria-label="Næste medie"
             className="glass-card absolute right-2 z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition-[color,box-shadow] hover:text-[var(--color-brand-light)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-light)] sm:right-4"
           >
             <ChevronRight className="h-5 w-5" aria-hidden="true" />
@@ -212,7 +225,18 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="relative aspect-square md:aspect-video">
-              {!imgErrors[currentItem.id] ? (
+              {currentItem.mediaType === "video" ? (
+                <video
+                  key={currentItem.id}
+                  src={currentItem.src}
+                  aria-label={currentItem.alt}
+                  className="h-full w-full bg-black object-contain"
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                />
+              ) : !imgErrors[currentItem.id] ? (
                 <Image
                   src={currentItem.src}
                   alt={currentItem.alt}
@@ -251,7 +275,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                   event.stopPropagation();
                   setLightboxIndex(index);
                 }}
-                aria-label={`Gå til billede ${index + 1}`}
+                aria-label={`Gå til medie ${index + 1}`}
                 aria-current={index === lightboxIndex ? "true" : undefined}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full"
               >

@@ -31,7 +31,13 @@ export function AdminSidebar() {
   return (
     <div className="flex h-full w-64 flex-col border-r border-gray-200 bg-white">
       <div className="flex h-16 items-center border-b border-gray-200 px-6">
-        <span className="text-xl font-bold tracking-tight text-gray-900">FRISØR KBH</span>
+        <Link
+          href="/"
+          aria-label="Gå til FRISØR KBH-forsiden"
+          className="rounded-sm text-xl font-bold tracking-tight text-gray-900 transition-colors hover:text-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-4"
+        >
+          FRISØR KBH
+        </Link>
       </div>
       
       <nav className="flex-1 space-y-1 px-3 py-4">

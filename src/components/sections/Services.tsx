@@ -1,11 +1,11 @@
 import React from "react";
-import { services } from "@/data/site";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ServiceCard } from "@/components/ui/ServiceCard";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import type { ServiceItem } from "@/types/site";
 
-export function Services() {
+export function Services({ services }: { services: ServiceItem[] }) {
   return (
     <section id="services" className="relative overflow-hidden bg-[var(--color-background)] py-20 md:py-28">
       {/* Subtle ambient glow */}
@@ -21,6 +21,11 @@ export function Services() {
         </ScrollReveal>
         
         <ScrollReveal stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-16">
+          {services.length === 0 ? (
+            <p className="col-span-full rounded-xl border border-white/[0.08] bg-[var(--color-surface)] px-6 py-12 text-center text-sm text-[var(--color-text-muted)]">
+              Behandlingerne bliver opdateret. Kontakt os gerne for pris og booking.
+            </p>
+          ) : null}
           {services.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
